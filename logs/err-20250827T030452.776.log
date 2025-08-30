@@ -1,0 +1,46 @@
+Error: Route "/day" used `searchParams.date`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at DayPage (src\app\(app)\day\page.tsx:13:42)
+  11 |
+  12 | export default async function DayPage({ searchParams }: { searchParams: { date?: string } }) {
+> 13 |   const selectedDateString = searchParams.date || format(new Date(), 'yyyy-MM-dd');
+     |                                          ^
+  14 |   
+  15 |   const { orbits, phases, pulses, commitments, weeklyProgress, monthlyProgress } = await getDashboardData(selectedDateString);
+  16 |   const quoteData = await getQuoteOfTheDay();
+Error: Route "/day" used `cookies().get('sb-srydrbbpctrseoqtarhm-auth-token')`. `cookies()` should be awaited before using its value. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at Object.get (src\lib\supabase\server.ts:13:29)
+    at getWithHints (../../src/cookies.ts:76:38)
+    at getAll (../../src/cookies.ts:90:51)
+    at Object.getItem (../../src/cookies.ts:324:33)
+    at getItemAsync (../../../src/lib/helpers.ts:129:30)
+    at SupabaseAuthClient.__loadSession (../../src/GoTrueClient.ts:1316:46)
+    at SupabaseAuthClient._useSession (../../src/GoTrueClient.ts:1274:32)
+    at SupabaseAuthClient._emitInitialSession (../../src/GoTrueClient.ts:1876:22)
+    at <unknown> (../../src/GoTrueClient.ts:1868:13)
+    at <unknown> (../../src/GoTrueClient.ts:1206:25)
+    at SupabaseAuthClient.lockNoOp [as lock] (../../src/GoTrueClient.ts:130:15)
+    at SupabaseAuthClient._acquireLock (../../src/GoTrueClient.ts:1200:24)
+    at <unknown> (../../src/GoTrueClient.ts:1867:17)
+  11 |       cookies: {
+  12 |         get(name: string) {
+> 13 |           return cookieStore.get(name)?.value
+     |                             ^
+  14 |         },
+  15 |         set(name: string, value: string, options: CookieOptions) {
+  16 |           try {
+ ⨯ Error: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"},"quotaValue":"200"}]},{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Learn more about Gemini API quotas","url":"https://ai.google.dev/gemini-api/docs/rate-limits"}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"7s"}]
+    at async (src\ai\flows\get-quote-of-the-day.ts:39:21)
+    at async DayPage (src\app\(app)\day\page.tsx:16:20)
+  37 |   },
+  38 |   async () => {
+> 39 |     const {output} = await prompt({});
+     |                     ^
+  40 |     return output!;
+  41 |   }
+  42 | ); {
+  status: 429,
+  statusText: 'Too Many Requests',
+  errorDetails: [Array],
+  traceId: '7370ac7b237192e8f3695d463078bbc0',
+  digest: '2389566263'
+}
