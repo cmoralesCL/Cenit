@@ -70,14 +70,13 @@ export function Panel({
   }
 
   const handleSavePhase = (values: PhaseFormValues) => {
-    if (!activeOrbitId && !editingPhase) return;
      startTransition(async () => {
         try {
           if (editingPhase) {
             await updatePhase(editingPhase.id, values);
             toast({ title: '¡Fase Actualizada!', description: `Se ha actualizado "${values.title}".` });
-          } else if (activeOrbitId) {
-            await addPhase({ ...values, life_prk_id: activeOrbitId });
+          } else {
+            await addPhase(values);
             toast({ title: '¡Fase Establecida!', description: `Ahora estás siguiendo "${values.title}".` });
           }
         } catch (error) {
@@ -215,6 +214,7 @@ export function Panel({
         onOpenChange={setPhaseDialogOpen} 
         onSave={handleSavePhase}
         phase={editingPhase}
+        defaultOrbitId={activeOrbitId}
       />
       <AddPulseDialog 
         isOpen={isPulseDialogOpen} 

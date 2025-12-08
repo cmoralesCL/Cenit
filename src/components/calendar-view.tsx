@@ -33,6 +33,7 @@ export function CalendarView({
     dailyProgressData, 
     habitTasksData, 
     areaPrks,
+    orbits,
     weeklyProgressData,
     monthlyProgress,
     commitments,
@@ -126,7 +127,7 @@ export function CalendarView({
 
     return (
         <>
-            <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            <main className="container mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
                 <ProgressCalendar
                   currentMonth={currentMonth}
                   onMonthChange={handleMonthChange}
@@ -136,16 +137,7 @@ export function CalendarView({
                   monthlyProgress={monthlyProgress}
                   onDayClick={onDayClick}
                 />
-                 <CommitmentsCard
-                    title="Compromisos del Período"
-                    description="Metas flexibles para el período visible en el calendario."
-                    commitments={commitments}
-                    selectedDate={new Date()} // Use current date for logging actions
-                    onToggle={onToggleCommitment}
-                    onUndo={onUndoCommitment}
-                    onEdit={onEditCommitment}
-                    onArchive={onArchiveCommitment}
-                />
+                 
             </main>
             <AddPulseDialog 
                 isOpen={isPulseDialogOpen}

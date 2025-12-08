@@ -42,6 +42,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ScrollArea } from './ui/scroll-area';
 
 const numberPreprocess = (val: any) => (val === '' || val === null ? undefined : val);
 
@@ -268,170 +269,176 @@ export function AddPulseDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="font-headline">{isEditing ? 'Editar Pulso' : 'Crear Pulso'}</DialogTitle>
-          <DialogDescription>Define una acción o hábito concreto para impulsar una Fase.</DialogDescription>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4 max-h-[70vh] overflow-y-auto pr-4">
-            <FormField control={form.control} name="title" render={({ field }) => (
-              <FormItem><FormLabel>Título</FormLabel><FormControl><Input placeholder="Ej: Correr 5km" {...field} /></FormControl><FormMessage /></FormItem>
-            )}/>
-            
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Descripción (Opcional)</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Añade notas, enlaces o detalles aquí."
-                      className="resize-none"
-                      {...field}
-                      value={field.value ?? ''}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Tipo de Pulso</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      className="grid grid-cols-2 gap-4"
-                    >
-                      <FormItem>
-                        <FormControl>
-                          <RadioGroupItem value="task" id="task" className="peer sr-only" />
-                        </FormControl>
-                        <Label
-                          htmlFor="task"
-                          className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                        >
-                          Tarea
-                          <span className="text-xs font-normal text-muted-foreground mt-1 text-center">Una acción única o recurrente.</span>
-                        </Label>
-                      </FormItem>
-                      <FormItem>
-                        <FormControl>
-                          <RadioGroupItem value="habit" id="habit" className="peer sr-only" />
-                        </FormControl>
-                         <Label
-                          htmlFor="habit"
-                          className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                        >
-                          Hábito
-                           <span className="text-xs font-normal text-muted-foreground mt-1 text-center">Una acción recurrente para formar una costumbre.</span>
-                        </Label>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="phase_ids"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Fase(s) Asociada(s)</FormLabel>
-                  <FormControl>
-                     <MultiSelect
-                        options={phases ? phases.map(ap => ({ label: ap.title, value: ap.id })) : []}
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        placeholder="Selecciona una o más Fases..."
-                        className="w-full"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            
-            <FormField control={form.control} name="start_date" render={({ field }) => (
-              <FormItem className="flex flex-col"><FormLabel>Fecha de Inicio</FormLabel><Popover>
-                <PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
-                  {field.value ? format(field.value, "PPP", { locale: es }) : <span>Elige una fecha</span>}
-                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent>
-              </Popover><FormMessage /></FormItem>
-            )}/>
-            
-            {showDueDate && (
+      <DialogContent className="sm:max-w-md p-0">
+        <ScrollArea className="max-h-[90vh]">
+          <div className="p-6 pb-20">
+            <DialogHeader>
+              <DialogTitle className="font-headline">{isEditing ? 'Editar Pulso' : 'Crear Pulso'}</DialogTitle>
+              <DialogDescription>Define una acción o hábito concreto para impulsar una Fase.</DialogDescription>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-4" id="pulse-form">
+                <FormField control={form.control} name="title" render={({ field }) => (
+                  <FormItem><FormLabel>Título</FormLabel><FormControl><Input placeholder="Ej: Correr 5km" {...field} /></FormControl><FormMessage /></FormItem>
+                )}/>
+                
                 <FormField
-                control={form.control}
-                name="due_date"
-                render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                    <FormLabel>Fecha Límite (Opcional)</FormLabel>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                        <FormControl>
-                            <Button
-                            variant={'outline'}
-                            className={cn(
-                                'pl-3 text-left font-normal',
-                                !field.value && 'text-muted-foreground'
-                            )}
-                            >
-                            {field.value ? (
-                                format(field.value, 'PPP', { locale: es })
-                            ) : (
-                                <span>Elige una fecha</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                        </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => {
-                            const startDate = form.getValues('start_date');
-                            return startDate ? date < startDate : false;
-                            }}
-                            initialFocus
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Descripción (Opcional)</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Añade notas, enlaces o detalles aquí."
+                          className="resize-none"
+                          {...field}
+                          value={field.value ?? ''}
                         />
-                        </PopoverContent>
-                    </Popover>
-                    <FormMessage />
+                      </FormControl>
+                      <FormMessage />
                     </FormItem>
-                )}
+                  )}
                 />
-            )}
+                
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel>Tipo de Pulso</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          className="grid grid-cols-2 gap-4"
+                        >
+                          <FormItem>
+                            <FormControl>
+                              <RadioGroupItem value="task" id="task" className="peer sr-only" />
+                            </FormControl>
+                            <Label
+                              htmlFor="task"
+                              className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                            >
+                              Tarea
+                              <span className="text-xs font-normal text-muted-foreground mt-1 text-center">Una acción única o recurrente.</span>
+                            </Label>
+                          </FormItem>
+                          <FormItem>
+                            <FormControl>
+                              <RadioGroupItem value="habit" id="habit" className="peer sr-only" />
+                            </FormControl>
+                            <Label
+                              htmlFor="habit"
+                              className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                            >
+                              Hábito
+                              <span className="text-xs font-normal text-muted-foreground mt-1 text-center">Una acción recurrente para formar una costumbre.</span>
+                            </Label>
+                          </FormItem>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FrequencyBuilder form={form} />
-            
-            <FormField control={form.control} name="weight" render={({ field }) => (
-              <FormItem><FormLabel>Nivel de Impacto (1-5)</FormLabel><FormControl><Input type="number" min="1" max="5" placeholder="1" {...field} /></FormControl><FormMessage /></FormItem>
-            )}/>
+                <FormField
+                  control={form.control}
+                  name="phase_ids"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Fase(s) Asociada(s)</FormLabel>
+                      <FormControl>
+                        <MultiSelect
+                            options={phases ? phases.map(ap => ({ label: ap.title, value: ap.id })) : []}
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            placeholder="Selecciona una o más Fases..."
+                            className="w-full"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField control={form.control} name="is_critical" render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                <div className="space-y-0.5"><FormLabel>¿Es Crítico?</FormLabel><FormMessage /></div>
-                <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-              </FormItem>
-            )}/>
+                
+                <FormField control={form.control} name="start_date" render={({ field }) => (
+                  <FormItem className="flex flex-col"><FormLabel>Fecha de Inicio</FormLabel><Popover>
+                    <PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
+                      {field.value ? format(field.value, "PPP", { locale: es }) : <span>Elige una fecha</span>}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent>
+                  </Popover><FormMessage /></FormItem>
+                )}/>
+                
+                {showDueDate && (
+                    <FormField
+                    control={form.control}
+                    name="due_date"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                        <FormLabel>Fecha Límite (Opcional)</FormLabel>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                            <FormControl>
+                                <Button
+                                variant={'outline'}
+                                className={cn(
+                                    'pl-3 text-left font-normal',
+                                    !field.value && 'text-muted-foreground'
+                                )}
+                                >
+                                {field.value ? (
+                                    format(field.value, 'PPP', { locale: es })
+                                ) : (
+                                    <span>Elige una fecha</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                            </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) => {
+                                const startDate = form.getValues('start_date');
+                                return startDate ? date < startDate : false;
+                                }}
+                                initialFocus
+                            />
+                            </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                )}
 
-            <DialogFooter className="pt-4"><Button type="submit">{isEditing ? 'Guardar Cambios' : 'Agregar Pulso'}</Button></DialogFooter>
-          </form>
-        </Form>
+                <FrequencyBuilder form={form} />
+                
+                <FormField control={form.control} name="weight" render={({ field }) => (
+                  <FormItem><FormLabel>Nivel de Impacto (1-5)</FormLabel><FormControl><Input type="number" min="1" max="5" placeholder="1" {...field} /></FormControl><FormMessage /></FormItem>
+                )}/>
+
+                <FormField control={form.control} name="is_critical" render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                    <div className="space-y-0.5"><FormLabel>¿Es Crítico?</FormLabel><FormMessage /></div>
+                    <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  </FormItem>
+                )}/>
+
+                <DialogFooter className="pt-4">
+                  <Button type="submit" form="pulse-form" disabled={!phases || phases.length === 0}>{isEditing ? 'Guardar Cambios' : 'Agregar Pulso'}</Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

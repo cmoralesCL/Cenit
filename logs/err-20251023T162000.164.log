@@ -1,0 +1,314 @@
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:42
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12120:11
+    at new Promise (<anonymous>)
+    at retryable (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12102:21)
+    at SupabaseAuthClient._refreshAccessToken (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14785:224)
+    at SupabaseAuthClient._callRefreshToken (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14898:48)
+    at SupabaseAuthClient.__loadSession (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14158:51)
+    at async SupabaseAuthClient._useSession (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14093:28)
+    at async SupabaseAuthClient._emitInitialSession (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14632:16) {
+  
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36 {
+  
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36 {
+  
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36 {
+  
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36 {
+  
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36 {
+  
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36 {
+  
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36 {
+  
+}
+AuthRetryableFetchError: fetch failed
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12342:15)
+    at async _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:18)
+    at async (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:24)
+    at async (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36) {
+  __isAuthError: true,
+  status: 0,
+  code: undefined
+}
+AuthRetryableFetchError: fetch failed
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12342:15)
+    at async _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:18)
+    at async (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:24)
+    at async (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36) {
+  __isAuthError: true,
+  status: 0,
+  code: undefined
+}
+TypeError: fetch failed
+    at async _handleRequest (../../../src/lib/fetch.ts:184:13)
+    at async _request (../../../src/lib/fetch.ts:157:15)
+    at async (../../src/GoTrueClient.ts:2058:17)
+    at async (../../../src/lib/helpers.ts:228:25) {
+  [cause]: [Error: getaddrinfo ENOTFOUND srydrbbpctrseoqtarhm.supabase.co] {
+    errno: -3008,
+    code: 'ENOTFOUND',
+    syscall: 'getaddrinfo',
+    hostname: 'srydrbbpctrseoqtarhm.supabase.co'
+  }
+}
+TypeError: fetch failed
+    at async _handleRequest (../../../src/lib/fetch.ts:184:13)
+    at async _request (../../../src/lib/fetch.ts:157:15)
+    at async (../../src/GoTrueClient.ts:2058:17)
+    at async (../../../src/lib/helpers.ts:228:25) {
+  [cause]: [Error: getaddrinfo ENOTFOUND srydrbbpctrseoqtarhm.supabase.co] {
+    errno: -3008,
+    code: 'ENOTFOUND',
+    syscall: 'getaddrinfo',
+    hostname: 'srydrbbpctrseoqtarhm.supabase.co'
+  }
+}
+TypeError: fetch failed
+    at async _handleRequest (../../../src/lib/fetch.ts:184:13)
+    at async _request (../../../src/lib/fetch.ts:157:15)
+    at async (../../src/GoTrueClient.ts:2058:17)
+    at async (../../../src/lib/helpers.ts:228:25) {
+  [cause]: [Error: getaddrinfo ENOTFOUND srydrbbpctrseoqtarhm.supabase.co] {
+    errno: -3008,
+    code: 'ENOTFOUND',
+    syscall: 'getaddrinfo',
+    hostname: 'srydrbbpctrseoqtarhm.supabase.co'
+  }
+}
+TypeError: fetch failed
+    at async _handleRequest (../../../src/lib/fetch.ts:184:13)
+    at async _request (../../../src/lib/fetch.ts:157:15)
+    at async (../../src/GoTrueClient.ts:2058:17)
+    at async (../../../src/lib/helpers.ts:228:25) {
+  [cause]: [Error: getaddrinfo ENOTFOUND srydrbbpctrseoqtarhm.supabase.co] {
+    errno: -3008,
+    code: 'ENOTFOUND',
+    syscall: 'getaddrinfo',
+    hostname: 'srydrbbpctrseoqtarhm.supabase.co'
+  }
+}
+TypeError: fetch failed
+    at async _handleRequest (../../../src/lib/fetch.ts:184:13)
+    at async _request (../../../src/lib/fetch.ts:157:15)
+    at async (../../src/GoTrueClient.ts:2058:17)
+    at async (../../../src/lib/helpers.ts:228:25) {
+  [cause]: [Error: getaddrinfo ENOTFOUND srydrbbpctrseoqtarhm.supabase.co] {
+    errno: -3008,
+    code: 'ENOTFOUND',
+    syscall: 'getaddrinfo',
+    hostname: 'srydrbbpctrseoqtarhm.supabase.co'
+  }
+}
+TypeError: fetch failed
+    at async _handleRequest (../../../src/lib/fetch.ts:184:13)
+    at async _request (../../../src/lib/fetch.ts:157:15)
+    at async (../../src/GoTrueClient.ts:2058:17)
+    at async (../../../src/lib/helpers.ts:228:25) {
+  [cause]: [Error: getaddrinfo ENOTFOUND srydrbbpctrseoqtarhm.supabase.co] {
+    errno: -3008,
+    code: 'ENOTFOUND',
+    syscall: 'getaddrinfo',
+    hostname: 'srydrbbpctrseoqtarhm.supabase.co'
+  }
+}
+TypeError: fetch failed
+    at async _handleRequest (../../../src/lib/fetch.ts:184:13)
+    at async _request (../../../src/lib/fetch.ts:157:15)
+    at async (../../src/GoTrueClient.ts:2058:17)
+    at async (../../../src/lib/helpers.ts:228:25) {
+  [cause]: [Error: getaddrinfo ENOTFOUND srydrbbpctrseoqtarhm.supabase.co] {
+    errno: -3008,
+    code: 'ENOTFOUND',
+    syscall: 'getaddrinfo',
+    hostname: 'srydrbbpctrseoqtarhm.supabase.co'
+  }
+}
+TypeError: fetch failed
+    at async _handleRequest (../../../src/lib/fetch.ts:184:13)
+    at async _request (../../../src/lib/fetch.ts:157:15)
+    at async (../../src/GoTrueClient.ts:2058:17)
+    at async (../../../src/lib/helpers.ts:228:25) {
+  [cause]: [Error: getaddrinfo ENOTFOUND srydrbbpctrseoqtarhm.supabase.co] {
+    errno: -3008,
+    code: 'ENOTFOUND',
+    syscall: 'getaddrinfo',
+    hostname: 'srydrbbpctrseoqtarhm.supabase.co'
+  }
+}
+Error [AuthRetryableFetchError]: fetch failed
+    at _handleRequest (../../../src/lib/fetch.ts:191:10)
+    at async _request (../../../src/lib/fetch.ts:157:15)
+    at async (../../src/GoTrueClient.ts:2058:17)
+    at async (../../../src/lib/helpers.ts:228:25) {
+  __isAuthError: true,
+  status: 0,
+  code: undefined
+}
+Error [AuthRetryableFetchError]: fetch failed
+    at _handleRequest (../../../src/lib/fetch.ts:191:10)
+    at async _request (../../../src/lib/fetch.ts:157:15)
+    at async (../../src/GoTrueClient.ts:2058:17)
+    at async (../../../src/lib/helpers.ts:228:25) {
+  __isAuthError: true,
+  status: 0,
+  code: undefined
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:42
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12120:11
+    at new Promise (<anonymous>)
+    at retryable (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12102:21)
+    at SupabaseAuthClient._refreshAccessToken (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14785:224)
+    at SupabaseAuthClient._callRefreshToken (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14898:48)
+    at SupabaseAuthClient.__loadSession (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14158:51)
+    at async SupabaseAuthClient._useSession (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14093:28)
+    at async SupabaseAuthClient._emitInitialSession (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14632:16) {
+  
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processTimers (node:internal/timers:520:9)
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36 {
+  
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36 {
+  
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36 {
+  
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36 {
+  
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36 {
+  
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36 {
+  
+}
+Error: fetch failed
+    at context.fetch (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\web\sandbox\context.js:322:60)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12038:23
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12338:24)
+    at _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:24)
+    at C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:225
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36 {
+  
+}
+AuthRetryableFetchError: fetch failed
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12342:15)
+    at async _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:18)
+    at async (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:24)
+    at async (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36) {
+  __isAuthError: true,
+  status: 0,
+  code: undefined
+}
+AuthRetryableFetchError: fetch failed
+    at _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12342:15)
+    at async _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12325:18)
+    at async (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:14790:24)
+    at async (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\edge\chunks\_ab1d091c._.js:12108:36) {
+  __isAuthError: true,
+  status: 0,
+  code: undefined
+}
+ ⨯ The requested resource isn't a valid image for /logo.png received text/html; charset=utf-8
+[Error: The requested resource isn't a valid image.] { statusCode: 400 }

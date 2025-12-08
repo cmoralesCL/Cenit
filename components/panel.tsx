@@ -4,147 +4,147 @@
 import { useState, useTransition, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { LifePrkSection } from './life-prk-section';
-import { AddAreaPrkDialog, type AreaPrkFormValues } from './add-area-prk-dialog';
-import { AddHabitTaskDialog, HabitTaskFormValues } from './add-habit-task-dialog';
-import type { LifePrk, AreaPrk, HabitTask } from '@/lib/types';
+import { AddPhaseDialog, type PhaseFormValues } from './add-area-prk-dialog';
+import { AddPulseDialog, PulseFormValues } from './add-habit-task-dialog';
+import type { Orbit, Phase, Pulse } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { 
-    addAreaPrk, 
-    updateAreaPrk,
-    addHabitTask, 
-    updateHabitTask,
-    archiveLifePrk,
-    archiveAreaPrk,
-    archiveHabitTask,
+    addPhase, 
+    updatePhase,
+    addPulse, 
+    updatePulse,
+    archiveOrbit,
+    archivePhase,
+    archivePulse,
 } from '@/app/actions';
 import { Button } from './ui/button';
 import { Accordion } from '@/components/ui/accordion';
 import { useDialog } from '@/hooks/use-dialog';
+import { Plus } from 'lucide-react';
 
 interface PanelProps {
-  lifePrks: LifePrk[];
-  areaPrks: AreaPrk[];
-  allHabitTasks: HabitTask[];
+  orbits: Orbit[];
+  phases: Phase[];
+  allPulses: Pulse[];
 }
 
 export function Panel({
-  lifePrks,
-  areaPrks,
-  allHabitTasks,
+  orbits,
+  phases,
+  allPulses,
 }: PanelProps) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
-  const { setLifePrkToEdit } = useDialog();
+  const { setOrbitToEdit } = useDialog();
 
-  const [openLifePrkIds, setOpenLifePrkIds] = useState<string[]>(lifePrks.map(lp => lp.id));
+  const [openOrbitIds, setOpenOrbitIds] = useState<string[]>([]);
 
   useEffect(() => {
-    setOpenLifePrkIds(currentOpenIds => {
-      const newLifePrkIds = lifePrks.map(lp => lp.id);
-      const allIds = new Set([...currentOpenIds, ...newLifePrkIds]);
-      return Array.from(allIds);
-    });
-  }, [lifePrks]);
+    // Initialize open orbits only on the client side after mount
+    // to avoid hydration mismatch.
+    setOpenOrbitIds(orbits.map(lp => lp.id));
+  }, [orbits]);
 
-  const [isAreaPrkDialogOpen, setAreaPrkDialogOpen] = useState(false);
-  const [isHabitTaskDialogOpen, setHabitTaskDialogOpen] = useState(false);
-  const [editingAreaPrk, setEditingAreaPrk] = useState<AreaPrk | null>(null);
-  const [editingHabitTask, setEditingHabitTask] = useState<HabitTask | null>(null);
-  const [activeLifePrkId, setActiveLifePrkId] = useState<string | null>(null);
-  const [activeAreaPrkId, setActiveAreaPrkId] = useState<string | null>(null);
 
-  const handleOpenEditLifePrkDialog = (lifePrk: LifePrk) => {
-    setLifePrkToEdit(lifePrk);
+  const [isPhaseDialogOpen, setPhaseDialogOpen] = useState(false);
+  const [isPulseDialogOpen, setPulseDialogOpen] = useState(false);
+  const [editingPhase, setEditingPhase] = useState<Phase | null>(null);
+  const [editingPulse, setEditingPulse] = useState<Pulse | null>(null);
+  const [activeOrbitId, setActiveOrbitId] = useState<string | null>(null);
+  const [activePhaseIds, setActivePhaseIds] = useState<string[]>([]);
+
+
+  const handleOpenEditOrbitDialog = (orbit: Orbit) => {
+    setOrbitToEdit(orbit);
   };
 
-  const handleOpenAddAreaPrkDialog = (lifePrkId: string) => {
-    setActiveLifePrkId(lifePrkId);
-    setEditingAreaPrk(null);
-    setAreaPrkDialogOpen(true);
+  const handleOpenAddPhaseDialog = (orbitId: string) => {
+    setActiveOrbitId(orbitId);
+    setEditingPhase(null);
+    setPhaseDialogOpen(true);
   }
 
-  const handleOpenEditAreaPrkDialog = (areaPrk: AreaPrk) => {
-    setActiveLifePrkId(areaPrk.life_prk_id);
-    setEditingAreaPrk(areaPrk);
-    setAreaPrkDialogOpen(true);
+  const handleOpenEditPhaseDialog = (phase: Phase) => {
+    setActiveOrbitId(phase.life_prk_id);
+    setEditingPhase(phase);
+    setPhaseDialogOpen(true);
   }
 
-  const handleSaveAreaPrk = (values: AreaPrkFormValues) => {
-    if (!activeLifePrkId && !editingAreaPrk) return;
+  const handleSavePhase = (values: PhaseFormValues) => {
+    if (!activeOrbitId && !editingPhase) return;
      startTransition(async () => {
         try {
-          if (editingAreaPrk) {
-            await updateAreaPrk(editingAreaPrk.id, values);
-            toast({ title: '¡PRK de Área Actualizado!', description: `Se ha actualizado "${values.title}".` });
-          } else if (activeLifePrkId) {
-            await addAreaPrk({ ...values, life_prk_id: activeLifePrkId });
-            toast({ title: '¡PRK de Área Establecido!', description: `Ahora estás siguiendo "${values.title}".` });
+          if (editingPhase) {
+            await updatePhase(editingPhase.id, values);
+            toast({ title: '¡Fase Actualizada!', description: `Se ha actualizado "${values.title}".` });
+          } else if (activeOrbitId) {
+            await addPhase({ ...values, life_prk_id: activeOrbitId });
+            toast({ title: '¡Fase Establecida!', description: `Ahora estás siguiendo "${values.title}".` });
           }
         } catch (error) {
-          toast({ variant: 'destructive', title: 'Error', description: 'No se pudo guardar el PRK de Área.' });
+          toast({ variant: 'destructive', title: 'Error', description: 'No se pudo guardar la Fase.' });
         }
     });
   };
 
-  const handleOpenAddHabitTaskDialog = (areaPrkId: string) => {
-    setActiveAreaPrkId(areaPrkId);
-    setEditingHabitTask(null);
-    setHabitTaskDialogOpen(true);
+  const handleOpenAddPulseDialog = (phaseId?: string) => {
+    setActivePhaseIds(phaseId ? [phaseId] : []);
+    setEditingPulse(null);
+    setPulseDialogOpen(true);
   };
 
-  const handleOpenEditHabitTaskDialog = (habitTask: HabitTask) => {
-    setEditingHabitTask(habitTask);
-    setActiveAreaPrkId(habitTask.area_prk_id);
-    setHabitTaskDialogOpen(true);
+  const handleOpenEditPulseDialog = (pulse: Pulse) => {
+    setEditingPulse(pulse);
+    setActivePhaseIds(pulse.phase_ids);
+    setPulseDialogOpen(true);
   };
 
-  const handleSaveHabitTask = (values: Partial<HabitTask>) => {
+  const handleSavePulse = (values: Partial<Pulse>) => {
     startTransition(async () => {
         try {
-            if (editingHabitTask) {
-                await updateHabitTask(editingHabitTask.id, values);
-                toast({ title: '¡Acción Actualizada!', description: `Se ha actualizado "${values.title}".` });
+            if (editingPulse) {
+                await updatePulse(editingPulse.id, values);
+                toast({ title: '¡Pulso Actualizado!', description: `Se ha actualizado "${values.title}".` });
             } else {
-                await addHabitTask(values);
-                toast({ title: '¡Acción Agregada!', description: `Se ha agregado "${values.title}".` });
+                await addPulse(values);
+                toast({ title: '¡Pulso Agregado!', description: `Se ha agregado "${values.title}".` });
             }
         } catch (error) {
-            console.error("Error al guardar la acción:", error);
-            toast({ variant: 'destructive', title: 'Error', description: 'No se pudo guardar la acción. Revisa los campos e inténtalo de nuevo.' });
+            console.error("Error al guardar el Pulso:", error);
+            toast({ variant: 'destructive', title: 'Error', description: 'No se pudo guardar el Pulso. Revisa los campos e inténtalo de nuevo.' });
         }
     });
   };
   
-  const handleArchiveLifePrk = (id: string) => {
+  const handleArchiveOrbit = (id: string) => {
     startTransition(async () => {
         try {
-          await archiveLifePrk(id);
-          toast({ title: 'PRK de Vida Archivado' });
+          await archiveOrbit(id);
+          toast({ title: 'Órbita Archivada' });
         } catch (error) {
-          toast({ variant: 'destructive', title: 'Error', description: 'No se pudo archivar el PRK de Vida.' });
+          toast({ variant: 'destructive', title: 'Error', description: 'No se pudo archivar la Órbita.' });
         }
     });
   };
 
-  const handleArchiveAreaPrk = (id: string) => {
+  const handleArchivePhase = (id: string) => {
     startTransition(async () => {
         try {
-          await archiveAreaPrk(id);
-          toast({ title: 'PRK de Área Archivado' });
+          await archivePhase(id);
+          toast({ title: 'Fase Archivada' });
         } catch (error) {
-          toast({ variant: 'destructive', title: 'Error', description: 'No se pudo archivar el PRK de Área.' });
+          toast({ variant: 'destructive', title: 'Error', description: 'No se pudo archivar la Fase.' });
         }
     });
   };
 
-  const handleArchiveHabitTask = (id: string) => {
+  const handleArchivePulse = (id: string) => {
     startTransition(async () => {
         try {
-          // The date doesn't matter for a date-agnostic view, but the action requires one.
-          await archiveHabitTask(id, new Date().toISOString());
-          toast({ title: 'Acción Archivada' });
+          await archivePulse(id, new Date().toISOString());
+          toast({ title: 'Pulso Archivado' });
         } catch (error) {
-          toast({ variant: 'destructive', title: 'Error', description: 'No se pudo archivar la Acción.' });
+          toast({ variant: 'destructive', title: 'Error', description: 'No se pudo archivar el Pulso.' });
         }
     });
   };
@@ -152,16 +152,22 @@ export function Panel({
   return (
     <>
       <main className="flex-1 container mx-auto px-2 sm:px-4 lg:px-6 py-4 overflow-y-auto">
-        <div className="mb-4">
-            <h1 className="text-2xl font-bold font-headline text-foreground">Panel Estratégico</h1>
-            <p className="text-sm text-muted-foreground">Una vista completa de todos tus objetivos y acciones.</p>
+        <div className="flex justify-between items-center mb-4">
+            <div>
+              <h1 className="text-2xl font-bold font-headline text-foreground">Panel Estratégico</h1>
+              <p className="text-sm text-muted-foreground">Una vista completa de todas tus Órbitas, Fases y Pulsos.</p>
+            </div>
+             <Button onClick={() => setOrbitToEdit(null)} className="hidden sm:inline-flex">
+                <Plus className="mr-2 h-4 w-4" />
+                Añadir Órbita
+            </Button>
         </div>
 
-        {lifePrks.length === 0 && !isPending && (
+        {orbits.length === 0 && !isPending && (
             <div className="text-center py-24">
-                <h2 className="text-xl font-headline font-semibold text-foreground">Bienvenido a tu Brújula</h2>
-                <p className="mt-2 text-sm text-muted-foreground">Define tu primer PRK de Vida para empezar tu viaje.</p>
-                <Button className="mt-6" onClick={() => setLifePrkToEdit(null)}>Crear un PRK de Vida</Button>
+                <h2 className="text-xl font-headline font-semibold text-foreground">Bienvenido a Cenit</h2>
+                <p className="mt-2 text-sm text-muted-foreground">Define tu primera Órbita para empezar a construir tu ecosistema.</p>
+                <Button className="mt-6" onClick={() => setOrbitToEdit(null)}>Crear una Órbita</Button>
             </div>
         )}
         {isPending && (
@@ -169,56 +175,56 @@ export function Panel({
                   <h2 className="text-xl font-headline font-semibold text-foreground">Cargando...</h2>
             </div>
         )}
-        {!isPending && lifePrks.length > 0 && (
+        {!isPending && orbits.length > 0 && (
           <>
             <div className="flex justify-end gap-2 mb-2">
-                <Button variant="ghost" size="sm" onClick={() => setOpenLifePrkIds(lifePrks.map(lp => lp.id))}>
+                <Button variant="ghost" size="sm" onClick={() => setOpenOrbitIds(orbits.map(lp => lp.id))}>
                     Expandir Todo
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => setOpenLifePrkIds([])}>
+                <Button variant="ghost" size="sm" onClick={() => setOpenOrbitIds([])}>
                     Contraer Todo
                 </Button>
             </div>
             <Accordion 
               type="multiple" 
               className="w-full space-y-3" 
-              value={openLifePrkIds}
-              onValueChange={setOpenLifePrkIds}
+              value={openOrbitIds}
+              onValueChange={setOpenOrbitIds}
             >
-              {lifePrks.map((lp) => (
+              {orbits.map((lp) => (
                 <LifePrkSection
                   key={lp.id}
-                  lifePrk={lp}
-                  areaPrks={areaPrks.filter(kp => kp.life_prk_id === lp.id)}
-                  allHabitTasks={allHabitTasks}
-                  onAddAreaPrk={handleOpenAddAreaPrkDialog}
-                  onEditAreaPrk={handleOpenEditAreaPrkDialog}
-                  onAddHabitTask={handleOpenAddHabitTaskDialog}
-                  onEditHabitTask={handleOpenEditHabitTaskDialog}
-                  onArchive={handleArchiveLifePrk}
-                  onEdit={handleOpenEditLifePrkDialog}
-                  onArchiveAreaPrk={handleArchiveAreaPrk}
-                  onArchiveHabitTask={handleArchiveHabitTask}
+                  orbit={lp}
+                  phases={phases.filter(kp => kp.life_prk_id === lp.id)}
+                  allPulses={allPulses}
+                  onAddPhase={handleOpenAddPhaseDialog}
+                  onEditPhase={handleOpenEditPhaseDialog}
+                  onAddPulse={handleOpenAddPulseDialog}
+                  onEditPulse={handleOpenEditPulseDialog}
+                  onArchive={handleArchiveOrbit}
+                  onEdit={handleOpenEditOrbitDialog}
+                  onArchivePhase={handleArchivePhase}
+                  onArchivePulse={handleArchivePulse}
                 />
               ))}
             </Accordion>
           </>
         )}
       </main>
-      <AddAreaPrkDialog 
-        isOpen={isAreaPrkDialogOpen} 
-        onOpenChange={setAreaPrkDialogOpen} 
-        onSave={handleSaveAreaPrk}
-        areaPrk={editingAreaPrk}
+      <AddPhaseDialog 
+        isOpen={isPhaseDialogOpen} 
+        onOpenChange={setPhaseDialogOpen} 
+        onSave={handleSavePhase}
+        phase={editingPhase}
       />
-      <AddHabitTaskDialog 
-        isOpen={isHabitTaskDialogOpen} 
-        onOpenChange={setHabitTaskDialogOpen} 
-        onSave={handleSaveHabitTask}
-        habitTask={editingHabitTask}
-        defaultAreaPrkId={activeAreaPrkId || undefined}
+      <AddPulseDialog 
+        isOpen={isPulseDialogOpen} 
+        onOpenChange={setPulseDialogOpen} 
+        onSave={handleSavePulse}
+        pulse={editingPulse}
+        defaultPhaseIds={activePhaseIds}
         defaultDate={new Date()}
-        areaPrks={areaPrks}
+        phases={phases}
         />
     </>
   );

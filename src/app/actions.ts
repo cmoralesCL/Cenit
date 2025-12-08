@@ -1,5 +1,8 @@
 'use server';
 
+import { getDashboardData, getCalendarData, getAnalyticsData } from "@/app/server/queries";
+import { parseISO } from "date-fns";
+
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { headers } from "next/headers";
@@ -13,7 +16,7 @@ import { cookies } from "next/headers";
 
 
 async function getCurrentUserId(): Promise<string> {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: { user }, error } = await supabase.auth.getUser();
 
     if (error || !user) {
@@ -25,7 +28,7 @@ async function getCurrentUserId(): Promise<string> {
 
 
 export async function login(formData: FormData) {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const data = {
       email: formData.get("email") as string,
@@ -44,7 +47,7 @@ export async function login(formData: FormData) {
 }
 
 export async function loginAsGuest() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const data = {
     email: "test@example.com",
@@ -64,16 +67,21 @@ export async function loginAsGuest() {
 
 
 export async function signup(formData: FormData) {
-    const origin = headers().get("origin");
-    const supabase = createClient();
+    const hdrs = await headers();
+    const origin = hdrs.get("origin") || "";
+    const supabase = await createClient();
     
     const data = {
       email: formData.get("email") as string,
       password: formData.get("password") as string,
     };
 
-    const { error } = await supabase.auth.signUp(data, {
-      emailRedirectTo: `${origin}/auth/callback`,
+    const { error } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
+      options: {
+        emailRedirectTo: `${origin}/auth/callback`,
+      },
     });
 
     if (error) {
@@ -97,14 +105,32 @@ export async function getAiSuggestions(input: SuggestRelatedHabitsTasksInput): P
 }
 
 export async function addOrbit(values: { title: string; description?: string, color_theme?: string }) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
+    let groupId = cookies().get('groupId')?.value || null;
+
+    // Validate the groupId
+    if (groupId) {
+        const { data: groupMember, error: groupError } = await supabase
+            .from('group_members')
+            .select('group_id')
+            .eq('group_id', groupId)
+            .eq('user_id', userId)
+            .single();
+
+        if (groupError || !groupMember) {
+            console.warn(`Invalid or non-member groupId (${groupId}) found in cookie. Falling back to personal orbit.`);
+            groupId = null; // Invalidate if user is not a member or group doesn't exist
+        }
+    }
+
     try {
         const { data, error } = await supabase.from('life_prks').insert([{ 
             title: values.title, 
             description: values.description || '',
             color_theme: values.color_theme || 'mint',
             user_id: userId,
+            group_id: groupId,
         }]).select();
 
         if(error) throw error;
@@ -118,7 +144,7 @@ export async function addOrbit(values: { title: string; description?: string, co
 }
 
 export async function updateOrbit(id: string, values: { title: string; description?: string, color_theme?: string }) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
     try {
         const { error } = await supabase
@@ -142,8 +168,25 @@ export async function updateOrbit(id: string, values: { title: string; descripti
 }
 
 export async function addPhase(values: { title: string; description?: string, life_prk_id: string }) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
+    let groupId = cookies().get('groupId')?.value || null;
+
+    // Validate the groupId
+    if (groupId) {
+        const { data: groupMember, error: groupError } = await supabase
+            .from('group_members')
+            .select('group_id')
+            .eq('group_id', groupId)
+            .eq('user_id', userId)
+            .single();
+
+        if (groupError || !groupMember) {
+            console.warn(`Invalid or non-member groupId (${groupId}) found in cookie. Falling back to personal phase.`);
+            groupId = null; // Invalidate if user is not a member or group doesn't exist
+        }
+    }
+
     try {
         const { data, error } = await supabase.from('area_prks').insert([{ 
             title: values.title,
@@ -153,6 +196,7 @@ export async function addPhase(values: { title: string; description?: string, li
             target_value: 100,
             current_value: 0,
             user_id: userId,
+            group_id: groupId,
          }]).select();
 
         if(error) throw error;
@@ -165,8 +209,8 @@ export async function addPhase(values: { title: string; description?: string, li
     revalidatePath('/day');
 }
 
-export async function updatePhase(id: string, values: { title: string; description?: string }) {
-    const supabase = createClient();
+export async function updatePhase(id: string, values: { title: string; description?: string; life_prk_id: string }) {
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
     try {
         const { error } = await supabase
@@ -174,6 +218,7 @@ export async function updatePhase(id: string, values: { title: string; descripti
             .update({ 
                 title: values.title,
                 description: values.description || '',
+                life_prk_id: values.life_prk_id,
             })
             .eq('id', id)
             .eq('user_id', userId);
@@ -189,11 +234,27 @@ export async function updatePhase(id: string, values: { title: string; descripti
 }
 
 export async function addPulse(values: Partial<Omit<Pulse, 'id' | 'created_at' | 'archived_at' | 'archived'>>) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
+    let groupId = cookies().get('groupId')?.value || null;
+
+    // Validate the groupId
+    if (groupId) {
+        const { data: groupMember, error: groupError } = await supabase
+            .from('group_members')
+            .select('group_id')
+            .eq('group_id', groupId)
+            .eq('user_id', userId)
+            .single();
+
+        if (groupError || !groupMember) {
+            console.warn(`Invalid or non-member groupId (${groupId}) found in cookie. Falling back to personal pulse.`);
+            groupId = null; // Invalidate if user is not a member or group doesn't exist
+        }
+    }
     
     const { phase_ids, ...taskData } = values;
-    const dataToInsert: any = { ...taskData, user_id: userId };
+    const dataToInsert: any = { ...taskData, user_id: userId, group_id: groupId };
 
     if (dataToInsert.frequency === 'UNICA') {
         dataToInsert.frequency = null;
@@ -223,7 +284,7 @@ export async function addPulse(values: Partial<Omit<Pulse, 'id' | 'created_at' |
 }
 
 export async function updatePulse(id: string, values: Partial<Omit<Pulse, 'id' | 'created_at' | 'archived' | 'archived_at' | 'user_id'>>): Promise<void> {
-    const supabase = createClient();
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
     
     const { phase_ids, ...updateData } = values;
@@ -271,7 +332,7 @@ export async function updatePulse(id: string, values: Partial<Omit<Pulse, 'id' |
 
 
 export async function updatePulseOrder(orderedIds: string[]): Promise<void> {
-    const supabase = createClient();
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
 
     try {
@@ -291,7 +352,7 @@ export async function updatePulseOrder(orderedIds: string[]): Promise<void> {
 
 
 export async function logPulseCompletion(pulseId: string, type: 'habit' | 'task', completionDate: string, progressValue?: number) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
 
     try {
@@ -318,50 +379,41 @@ export async function logPulseCompletion(pulseId: string, type: 'habit' | 'task'
         }
 
         // --- Logic for different measurement types ---
-        // For binary accumulative, we insert a new log for each instance
-        if (task.measurement_type === 'binary' && task.frequency?.includes('ACUMULATIVO')) {
-             const { error: logErrorObj } = await supabase.from('progress_logs').insert({
-                habit_task_id: pulseId,
-                completion_date: completionDate,
-                progress_value: progressValue, // will be 1 or -1
-                completion_percentage: 1.0,
-                user_id: userId,
-            });
-            if (logErrorObj) throw logErrorObj;
-        } else { // For binary daily and ALL quantitative, we upsert to accumulate
-            // 1. Get existing log for the day
-            const { data: existingLog } = await supabase
-                .from('progress_logs')
-                .select('progress_value')
-                .eq('habit_task_id', pulseId)
-                .eq('completion_date', completionDate)
-                .single();
-            
-            // 2. Calculate new total progress value
-            const currentValue = existingLog?.progress_value ?? 0;
-            const newValue = currentValue + (progressValue ?? 1);
+        // For both binary and quantitative accumulative tasks, we upsert to accumulate.
+        
+        // 1. Get existing log for the day
+        const { data: existingLog } = await supabase
+            .from('progress_logs')
+            .select('progress_value')
+            .eq('habit_task_id', pulseId)
+            .eq('completion_date', completionDate)
+            .single();
+        
+        // 2. Calculate new total progress value
+        const currentValue = existingLog?.progress_value ?? 0;
+        const newValue = currentValue + (progressValue ?? 1);
 
-            // 3. Calculate completion percentage
-            let completionPercentage = 1.0;
-            if (task.measurement_type === 'quantitative') {
-                const target = task.measurement_goal?.target_count;
-                if (typeof target === 'number' && target > 0) {
-                    completionPercentage = newValue / target;
-                } else {
-                    completionPercentage = newValue > 0 ? 1 : 0;
-                }
+        // 3. Calculate completion percentage
+        let completionPercentage = 1.0;
+        if (task.measurement_type === 'quantitative' || task.frequency?.includes('ACUMULATIVO')) {
+            const target = task.measurement_goal?.target_count;
+            if (typeof target === 'number' && target > 0) {
+                completionPercentage = newValue / target;
+            } else {
+                completionPercentage = newValue > 0 ? 1 : 0;
             }
-            
-            // 4. Upsert the accumulated value
-            const { error: logErrorObj } = await supabase.from('progress_logs').upsert({
-                habit_task_id: pulseId,
-                completion_date: completionDate,
-                progress_value: newValue,
-                completion_percentage: completionPercentage,
-                user_id: userId,
-            }, { onConflict: 'habit_task_id, completion_date' });
-            if (logErrorObj) throw logErrorObj;
         }
+        
+        // 4. Upsert the accumulated value
+        const { error: logErrorObj } = await supabase.from('progress_logs').upsert({
+            habit_task_id: pulseId,
+            completion_date: completionDate,
+            progress_value: newValue,
+            completion_percentage: completionPercentage,
+            user_id: userId,
+        }, { onConflict: 'habit_task_id, completion_date, user_id' });
+
+        if (logErrorObj) throw logErrorObj;
 
         revalidatePath('/panel');
         revalidatePath('/calendar');
@@ -374,7 +426,7 @@ export async function logPulseCompletion(pulseId: string, type: 'habit' | 'task'
 }
 
 export async function removePulseCompletion(pulseId: string, type: 'habit' | 'task', completionDate: string) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
     try {
         if (type === 'task') {
@@ -412,7 +464,7 @@ export async function removePulseCompletion(pulseId: string, type: 'habit' | 'ta
 }
 
 export async function archiveOrbit(id: string) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
     try {
         const { error } = await supabase.from('life_prks').update({ archived: true }).eq('id', id).eq('user_id', userId);
@@ -427,7 +479,7 @@ export async function archiveOrbit(id: string) {
 }
 
 export async function archivePhase(id: string) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
     try {
         const { error } = await supabase.from('area_prks').update({ archived: true }).eq('id', id).eq('user_id', userId);
@@ -442,7 +494,7 @@ export async function archivePhase(id: string) {
 }
 
 export async function archivePulse(id: string, archiveDate: string) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
     try {
         const { error } = await supabase
@@ -467,10 +519,61 @@ export async function archivePulse(id: string, archiveDate: string) {
 }
 
 
+export async function createGroup(name: string, description?: string) {
+    const supabase = await createClient();
+    const userId = await getCurrentUserId();
+
+    try {
+        const { data: group, error: groupError } = await supabase.from('groups').insert([{ 
+            name,
+            description,
+            owner_id: userId,
+        }]).select().single();
+
+        if (groupError) {
+            // If the error is a unique constraint violation on the group name, handle it.
+            if (groupError.code === '23505') {
+                console.warn(`Group with name "${name}" already exists.`);
+                // Optionally, you could return the existing group or throw a more specific error.
+            }
+            throw groupError;
+        }
+
+        // The trigger 'on_group_created_add_owner' should handle adding the owner to group_members.
+        // The manual insert is removed to prevent duplicate key errors.
+
+    } catch (error) {
+        await logError(error, { at: 'createGroup', name, description });
+        console.error("Error creating group:", error);
+        throw error;
+    }
+    revalidatePath('/grup');
+}
+
+export async function inviteUserToGroup(groupId: string, userId: string) {
+    const supabase = await createClient();
+
+    try {
+        const { error } = await supabase.from('group_members').insert([{ 
+            group_id: groupId,
+            user_id: userId,
+            role: 'member',
+        }]);
+
+        if (error) throw error;
+
+    } catch (error) {
+        await logError(error, { at: 'inviteUserToGroup', groupId, userId });
+        console.error("Error inviting user to group:", error);
+        throw error;
+    }
+    revalidatePath('/grup');
+}
+
 // --- Simple Tasks Actions ---
 
 export async function getSimpleTasks(): Promise<SimpleTask[]> {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   // This RPC call fetches tasks and their share info in one go.
   const { data, error } = await supabase.rpc('get_user_simple_tasks');
@@ -497,16 +600,16 @@ export async function getSimpleTasks(): Promise<SimpleTask[]> {
   }));
 }
 
-export async function addSimpleTask(title: string, dueDate?: string | null): Promise<void> {
+export async function addSimpleTask(title: string, description: string | null, dueDate?: string | null): Promise<void> {
   if (!title) {
     throw new Error('Title is required');
   }
-  const supabase = createClient();
+  const supabase = await createClient();
   const userId = await getCurrentUserId();
 
   const { error } = await supabase
     .from('simple_tasks')
-    .insert({ title, user_id: userId, is_completed: false, due_date: dueDate });
+    .insert({ title, description, user_id: userId, is_completed: false, due_date: dueDate });
 
   if (error) {
     await logError(error, { at: 'addSimpleTask', title });
@@ -520,7 +623,7 @@ export async function updateSimpleTask(id: string, title: string, dueDate?: stri
     if (!title) {
         throw new Error('Title is required');
     }
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // RLS policy will determine who can update (owner or assignee)
     const { error } = await supabase
@@ -538,7 +641,7 @@ export async function updateSimpleTask(id: string, title: string, dueDate?: stri
 
 
 export async function updateSimpleTaskCompletion(id: string, is_completed: boolean): Promise<void> {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   // RLS policy will enforce who can update it (owner, assignee, or shared user)
   const { error } = await supabase
@@ -555,7 +658,7 @@ export async function updateSimpleTaskCompletion(id: string, is_completed: boole
 }
 
 export async function deleteSimpleTask(id: string): Promise<void> {
-  const supabase = createClient();
+  const supabase = await createClient();
   const userId = await getCurrentUserId();
 
   // RLS policy ensures only the owner can delete.
@@ -575,9 +678,9 @@ export async function deleteSimpleTask(id: string): Promise<void> {
 
 
 // --- Task Sharing & Assigning Actions ---
-function createAdminClient() {
-    const cookieStore = cookies();
-    
+async function createAdminClient() {
+    const cookieStore = await cookies();
+
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
         throw new Error("SUPABASE_SERVICE_ROLE_KEY is not set in environment variables.");
     }
@@ -588,20 +691,20 @@ function createAdminClient() {
         {
             cookies: {
                 get(name: string) {
-                    return cookieStore.get(name)?.value
+                    return cookieStore.get(name)?.value;
                 },
             },
             auth: {
                 // Esto previene que el cliente de servicio intente usar el JWT del usuario
                 autoRefreshToken: false,
-                persistSession: false
-            }
+                persistSession: false,
+            },
         }
     );
 }
 
 export async function getRegisteredUsers(): Promise<{ id: string, email: string }[]> {
-    const supabaseAdmin = createAdminClient();
+    const supabaseAdmin = await createAdminClient();
     const currentUserId = await getCurrentUserId();
 
     const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers();
@@ -619,7 +722,7 @@ export async function getRegisteredUsers(): Promise<{ id: string, email: string 
 
 
 export async function shareTaskWithUser(taskId: string, sharedWithUserId: string): Promise<void> {
-    const supabase = createClient();
+    const supabase = await createClient();
     const sharedByUserId = await getCurrentUserId();
 
     const { error } = await supabase
@@ -639,7 +742,7 @@ export async function shareTaskWithUser(taskId: string, sharedWithUserId: string
 }
 
 export async function unshareTaskWithUser(taskId: string, sharedWithUserId: string): Promise<void> {
-    const supabase = createClient();
+    const supabase = await createClient();
     const sharedByUserId = await getCurrentUserId();
 
     const { error } = await supabase
@@ -658,7 +761,7 @@ export async function unshareTaskWithUser(taskId: string, sharedWithUserId: stri
 }
 
 export async function assignSimpleTask(taskId: string, assignedToUserId: string | null): Promise<void> {
-    const supabase = createClient();
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
 
     const { error } = await supabase
@@ -673,4 +776,65 @@ export async function assignSimpleTask(taskId: string, assignedToUserId: string 
         throw new Error('Failed to assign task.');
     }
     revalidatePath('/tasks');
+}
+
+export async function getDashboardDataAction(date: string | undefined, groupId: string | null) {
+  // The server action is the security boundary. It must validate the groupId.
+  let validatedGroupId = groupId;
+  if (groupId) {
+      const supabase = await createClient();
+      const userId = await getCurrentUserId();
+      const { data: groupMember, error } = await supabase
+          .from('group_members')
+          .select('group_id')
+          .eq('group_id', groupId)
+          .eq('user_id', userId)
+          .single();
+
+      if (error || !groupMember) {
+          console.warn(`Invalid or non-member groupId (${groupId}) passed to getDashboardDataAction. Falling back to personal data.`);
+          validatedGroupId = null;
+      }
+  }
+  return getDashboardData(date, validatedGroupId);
+}
+
+export async function getCalendarDataAction(monthString: string | null | undefined, groupId: string | null) {
+  const monthDate = monthString ? parseISO(monthString) : new Date();
+  return getCalendarData(monthDate, groupId);
+}
+
+export async function getAnalyticsDataAction(filters: {
+    level?: 'orbits' | 'phases' | 'pulses';
+    timePeriod?: 'all' | 'last30d' | 'last3m' | 'custom';
+    from?: string;
+    to?: string;
+    scale?: 'daily' | 'weekly' | 'monthly';
+    orbitId?: string;
+    phaseId?: string;
+    pulseId?: string;
+}, groupId: string | null) {
+    const { level = 'orbits', timePeriod = 'last30d', scale = 'daily', from, to, orbitId, phaseId, pulseId } = filters;
+    
+    let timePeriodForQuery: 'all' | 'last30d' | 'last3m' | { from: Date; to: Date };
+
+    if (timePeriod === 'custom' && from && to) {
+        timePeriodForQuery = {
+            from: new Date(from),
+            to: new Date(to),
+        };
+    } else if (timePeriod === 'last3m' || timePeriod === 'all' || timePeriod === 'last30d') {
+        timePeriodForQuery = timePeriod;
+    } else {
+        timePeriodForQuery = 'last30d'; // Default
+    }
+
+    return getAnalyticsData({ 
+        level, 
+        timePeriod: timePeriodForQuery, 
+        scale, 
+        orbitId, 
+        phaseId, 
+        pulseId 
+    }, groupId);
 }

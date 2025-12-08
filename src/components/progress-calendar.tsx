@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isToday, addWeeks, subWeeks } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ListTodo } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { HabitTaskItem } from '@/components/habit-task-item';
@@ -139,41 +139,44 @@ export function ProgressCalendar({
                       key={day.toString()}
                       onClick={() => onDayClick(day)}
                       className={cn(
-                        "h-40 border rounded-lg p-2 flex flex-col cursor-pointer transition-colors hover:bg-accent/50",
+                        "h-20 border rounded-lg p-2 flex flex-col cursor-pointer transition-colors hover:bg-accent/50",
                         !isCurrentMonth && view === 'month' && "bg-muted/30 text-muted-foreground",
                         isMounted && isToday(day) && "border-primary border-2"
                       )}
                     >
-                      <div className={cn("font-semibold")}>
-                        {format(day, 'd')}
+                      <div className="flex justify-between items-center">
+                        <div className={cn("font-semibold")}>
+                          {format(day, 'd')}
+                        </div>
+                        { (isCurrentMonth || view === 'week') && tasks.length > 0 && (
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <span>{tasks.length}</span>
+                            <ListTodo className="h-3 w-3" />
+                          </div>
+                        )}
                       </div>
-                      { (isCurrentMonth || view === 'week') && (
-                        <div className="flex-grow overflow-y-auto mt-1 space-y-1 pr-1">
-                           {progressInfo && (
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <div className="flex items-center gap-2">
-                                    <Progress value={progressInfo?.progress ?? 0} className="h-1.5 w-full" />
-                                    <span className="text-xs font-medium text-muted-foreground">
-                                      {Math.round(progressInfo.progress)}%
-                                    </span>
-                                  </div>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Progreso del día</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            )}
-                          {tasks.slice(0, 4).map(task => (
-                            <HabitTaskItem key={task.id} item={task} selectedDate={day} />
-                          ))}
+                      { (isCurrentMonth || view === 'week') && progressInfo && progressInfo.progress > 0 && (
+                        <div className="flex-grow flex flex-col items-center justify-end text-center w-full">
+                            <Tooltip>
+                              <TooltipTrigger asChild className="w-full">
+                                <div className="flex items-center gap-2 w-full">
+                                  <Progress value={progressInfo.progress} className="h-1.5 flex-grow" />
+                                  <span className="text-xs font-medium text-muted-foreground">
+                                    {Math.round(progressInfo.progress)}%
+                                  </span>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Progreso del día</p>
+                              </TooltipContent>
+                            </Tooltip>
                         </div>
                       )}
                     </div>
                   );
                 })}
                 {/* Weekly Progress Indicator */}
-                <div className="h-40 border rounded-lg p-2 flex flex-col items-center justify-center bg-muted/20">
+                <div className="h-20 border rounded-lg p-2 flex flex-col items-center justify-center bg-muted/20">
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="text-center">

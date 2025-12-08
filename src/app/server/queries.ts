@@ -1,5 +1,3 @@
-
-
 'use server';
 
 import { createClient } from "@/lib/supabase/server";
@@ -44,7 +42,7 @@ import { redirect } from "next/navigation";
 
 
 async function getCurrentUserId(): Promise<string> {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: { user }, error } = await supabase.auth.getUser();
 
     if (error || !user) {
@@ -79,7 +77,7 @@ function isTaskActiveOnDate(task: Pulse, date: Date): boolean {
     // A one-off task with no frequency is active only on its start date, regardless of completion.
     if (task.frequency === null || task.frequency === 'UNICA') {
         const isCompleted = !!task.completion_date;
-        if (isCompleted) {
+        if (isCompleted && task.completion_date) {
             // If completed, only show it on its completion date, not after.
             return isSameDay(targetDate, startOfDay(parseISO(task.completion_date)));
         }
@@ -105,7 +103,7 @@ function isTaskActiveOnDate(task: Pulse, date: Date): boolean {
 
     // --- Frequency Logic (applies to both tasks and habits) ---
     // Frequencies for commitments should not appear on the calendar
-    if (task.frequency.includes('ACUMULATIVO')) {
+    if (task.frequency && task.frequency.includes('ACUMULATIVO')) {
         return false;
     }
 
@@ -361,13 +359,19 @@ function getActiveCommitments(allHabitTasks: Pulse[], allProgressLogs: ProgressL
     });
 }
 
-async function fetchAndMapHabitTasks(userId: string): Promise<Pulse[]> {
-    const supabase = createClient();
-    const { data: tasks, error: tasksError } = await supabase
+async function fetchAndMapHabitTasks(userId: string, groupId: string | null): Promise<Pulse[]> {
+    const supabase = await createClient();
+    let query = supabase
         .from('habit_tasks')
-        .select('*')
-        .eq('user_id', userId)
-        .order('display_order', { nullsFirst: true });
+        .select('*');
+
+    if (groupId) {
+        query = query.eq('group_id', groupId);
+    } else {
+        query = query.eq('user_id', userId).is('group_id', null);
+    }
+
+    const { data: tasks, error: tasksError } = await query.order('display_order', { nullsFirst: true });
     if (tasksError) throw tasksError;
 
     const { data: links, error: linksError } = await supabase
@@ -390,50 +394,125 @@ async function fetchAndMapHabitTasks(userId: string): Promise<Pulse[]> {
 }
 
 
-export async function getDashboardData(selectedDateString: string) {
-    const supabase = createClient();
+export async function getDashboardData(selectedDateString: string | undefined, groupId: string | null) {
+    const dateToUse = selectedDateString || format(new Date(), 'yyyy-MM-dd');
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
-    const selectedDate = parseISO(selectedDateString);
+    const selectedDate = parseISO(dateToUse);
 
-    const { data: lifePrks, error: lifePrksError } = await supabase.from('life_prks').select('*').eq('archived', false).eq('user_id', userId);
+    let lifePrksQuery = supabase.from('life_prks').select('*').eq('archived', false);
+    if (groupId) {
+        lifePrksQuery = lifePrksQuery.eq('group_id', groupId);
+    } else {
+        lifePrksQuery = lifePrksQuery.eq('user_id', userId).is('group_id', null);
+    }
+    const { data: lifePrks, error: lifePrksError } = await lifePrksQuery;
     if (lifePrksError) {
         await logError(lifePrksError, {at: 'getDashboardData - lifePrks'});
         throw lifePrksError;
     };
 
-    const { data: areaPrks, error: areaPrksError } = await supabase.from('area_prks').select('*').eq('archived', false).eq('user_id', userId);
+    let areaPrksQuery = supabase.from('area_prks').select('*').eq('archived', false);
+    if (groupId) {
+        areaPrksQuery = areaPrksQuery.eq('group_id', groupId);
+    } else {
+        areaPrksQuery = areaPrksQuery.eq('user_id', userId).is('group_id', null);
+    }
+    const { data: areaPrks, error: areaPrksError } = await areaPrksQuery;
     if (areaPrksError) {
         await logError(areaPrksError, {at: 'getDashboardData - areaPrks'});
         throw areaPrksError;
     }
 
-    const allHabitTasks = await fetchAndMapHabitTasks(userId);
+    const allHabitTasks = await fetchAndMapHabitTasks(userId, groupId);
 
-    const { data: allProgressLogs, error: progressLogsError } = await supabase.from('progress_logs').select('*').eq('user_id', userId);
+    let progressLogsQuery = supabase.from('progress_logs').select('*');
+    if (groupId) {
+        progressLogsQuery = progressLogsQuery.in('habit_task_id', allHabitTasks.map(t => t.id));
+    } else {
+        progressLogsQuery = progressLogsQuery.eq('user_id', userId);
+    }
+    const { data: allProgressLogs, error: progressLogsError } = await progressLogsQuery;
     if (progressLogsError) {
         await logError(progressLogsError, {at: 'getDashboardData - allProgressLogs'});
         throw progressLogsError;
     }
+
+    // --- Pre-process data for progress calculations ---
+    const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
+    const weekEnd = endOfWeek(selectedDate, { weekStartsOn: 1 });
+    const activeTasksForWeek = getActiveTasksForPeriod(allHabitTasks, weekStart, weekEnd);
+
+    const logsByDay = allProgressLogs.reduce((acc, log) => {
+        const day = format(parseISO(log.completion_date), 'yyyy-MM-dd');
+        if (!acc[day]) {
+            acc[day] = [];
+        }
+        acc[day].push(log);
+        return acc;
+    }, {} as Record<string, ProgressLog[]>);
+
+    // --- Calculate daily progress for the week view (WeekNav) ---
+    const weekDays = eachDayOfInterval({ start: weekStart, end: weekEnd });
+    const dailyProgressDataForWeek: DailyProgressSnapshot[] = [];
+    let pulsesForSelectedDay: Pulse[] = [];
+
+    for (const day of weekDays) {
+        const dayString = format(day, 'yyyy-MM-dd');
+        const baseTasksForDayInLoop = activeTasksForWeek[dayString] || [];
+        const logsForDayInLoop = logsByDay[dayString] || [];
+        const habitTasksForDayInLoop = baseTasksForDayInLoop.map(task => {
+            const completionLog = logsForDayInLoop.find(log => log.habit_task_id === task.id);
+            let completedToday = !!completionLog;
+            if (task.measurement_type === 'quantitative' && task.measurement_goal?.target_count && completionLog) {
+                completedToday = (completionLog.progress_value ?? 0) >= task.measurement_goal.target_count;
+            } else if (completionLog) {
+                completedToday = (completionLog.completion_percentage ?? 0) >= 1;
+            }
+            return { 
+                ...task, 
+                completedToday, 
+                current_progress_value: completionLog?.progress_value,
+                completion_date: completionLog ? dayString : ((task.type === 'task' && !task.frequency) ? task.completion_date : undefined),
+            };
+        });
+
+        if (isSameDay(day, selectedDate)) {
+            pulsesForSelectedDay = habitTasksForDayInLoop;
+        }
+
+        const { lifePrksWithProgress } = calculateProgressForDate(day, lifePrks, areaPrks, habitTasksForDayInLoop);
+        const relevantLifePrks = lifePrksWithProgress.filter(lp => lp.progress !== null);
+        const overallProgress = relevantLifePrks.length > 0
+            ? relevantLifePrks.reduce((sum, lp) => sum + (lp.progress ?? 0), 0) / relevantLifePrks.length
+            : 0;
+        dailyProgressDataForWeek.push({
+            snapshot_date: dayString,
+            progress: isNaN(overallProgress) ? 0 : overallProgress,
+        });
+    }
     
-    const habitTasksForDay = await getHabitTasksForDate(selectedDate, allHabitTasks, allProgressLogs);
-    
-    const { lifePrksWithProgress, areaPrksWithProgress } = calculateProgressForDate(selectedDate, lifePrks, areaPrks, habitTasksForDay);
+    const { lifePrksWithProgress, areaPrksWithProgress } = calculateProgressForDate(selectedDate, lifePrks, areaPrks, pulsesForSelectedDay);
 
     const commitments = getActiveCommitments(allHabitTasks, allProgressLogs, selectedDate);
     
-    // Calculate Weekly Progress
-    const weeklyProgress = await calculateWeeklyProgress(selectedDate, allHabitTasks, allProgressLogs);
-
-    // Calculate Monthly Progress
-    const monthlyProgress = await calculateMonthlyProgress(selectedDate, allHabitTasks, allProgressLogs);
+    // --- Calculate Weekly and Monthly Progress using pre-computed data ---
+    const weeklyProgress = await calculateWeeklyProgress(selectedDate, allHabitTasks, allProgressLogs, activeTasksForWeek, logsByDay);
+    
+    const monthStart = startOfMonth(selectedDate);
+    const monthEnd = endOfMonth(selectedDate);
+    const activeTasksForMonth = getActiveTasksForPeriod(allHabitTasks, monthStart, monthEnd);
+    const monthlyProgress = await calculateMonthlyProgress(selectedDate, allHabitTasks, allProgressLogs, activeTasksForMonth, logsByDay);
 
     return {
         orbits: lifePrksWithProgress,
         phases: areaPrksWithProgress,
-        pulses: habitTasksForDay,
+        pulses: pulsesForSelectedDay,
         commitments: commitments,
         weeklyProgress: weeklyProgress,
         monthlyProgress: monthlyProgress,
+        date: dateToUse,
+        dailyProgressDataForWeek,
     };
 }
 
@@ -441,32 +520,41 @@ export async function getDashboardData(selectedDateString: string) {
 async function calculateWeeklyProgress(
     selectedDate: Date,
     allHabitTasks: Pulse[],
-    allProgressLogs: ProgressLog[]
+    allProgressLogs: ProgressLog[],
+    habitTasksByDay: Record<string, Pulse[]>, // Now passed in
+    logsByDay: Record<string, ProgressLog[]>      // Now passed in
 ): Promise<number> {
     const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
-    // Calculate progress only up to the selected date within the week
-    const weekEnd = selectedDate; 
+    const weekEnd = endOfWeek(selectedDate, { weekStartsOn: 1 }); 
     const weekDays = eachDayOfInterval({ start: weekStart, end: weekEnd });
 
     let totalWeightedProgress = 0;
     let totalWeight = 0;
-    
-    const habitTasksByDay: Record<string, Pulse[]> = {};
-    for (const day of weekDays) {
-        habitTasksByDay[format(day, 'yyyy-MM-dd')] = await getHabitTasksForDate(day, allHabitTasks, allProgressLogs);
-    }
 
-    // 1. Daily tasks progress
+    // 1. Daily tasks progress (using pre-computed data)
     weekDays.forEach(d => {
         const dayString = format(d, 'yyyy-MM-dd');
         const tasks = habitTasksByDay[dayString] ?? [];
+        
         if (tasks.length > 0) {
             tasks.forEach(task => {
+                const logsForThisDay = logsByDay[dayString] || [];
+                const completionLog = logsForThisDay.find(log => log.habit_task_id === task.id);
+
+                let completedToday = !!completionLog;
+                let current_progress_value = completionLog?.progress_value;
+
+                if (task.measurement_type === 'quantitative' && task.measurement_goal?.target_count && completionLog) {
+                    completedToday = (current_progress_value ?? 0) >= task.measurement_goal.target_count;
+                } else if (completionLog) {
+                    completedToday = (completionLog.completion_percentage ?? 0) >= 1;
+                }
+
                 let progressPercentage = 0;
                 if (task.measurement_type === 'quantitative') {
                     const target = task.measurement_goal?.target_count ?? 1;
-                    progressPercentage = target > 0 ? ((task.current_progress_value ?? 0) / target) : 0;
-                } else if (task.completedToday) {
+                    progressPercentage = target > 0 ? ((current_progress_value ?? 0) / target) : 0;
+                } else if (completedToday) {
                     progressPercentage = 1;
                 }
                 totalWeightedProgress += progressPercentage * task.weight;
@@ -480,17 +568,11 @@ async function calculateWeeklyProgress(
         .filter(c => c.frequency?.startsWith('SEMANAL_ACUMULATIVO'));
 
     weeklyCommitmentTasks.forEach(task => {
-        let progressPercentage = 0;
-        const logs = allProgressLogs.filter(log => log.habit_task_id === task.id && isWithinInterval(parseISO(log.completion_date), { start: weekStart, end: weekEnd }));
         const target = task.measurement_goal?.target_count ?? 1;
-
-        if (task.measurement_type === 'quantitative') {
-            const totalValue = logs.reduce((sum, log) => sum + (log.progress_value ?? 0), 0);
-            progressPercentage = target > 0 ? (totalValue / target) : 0;
-        } else if (task.measurement_type === 'binary') {
-            const completions = logs.length;
-            progressPercentage = target > 0 ? (completions / target) : 0;
-        }
+        // The 'current_progress_value' is already calculated correctly in getActiveCommitments
+        const totalValue = task.current_progress_value ?? 0;
+        
+        const progressPercentage = target > 0 ? (totalValue / target) : 0;
 
         totalWeightedProgress += progressPercentage * task.weight;
         totalWeight += task.weight;
@@ -507,31 +589,56 @@ async function calculateWeeklyProgress(
 async function calculateMonthlyProgress(
     referenceDate: Date,
     allHabitTasks: Pulse[],
-    allProgressLogs: ProgressLog[]
+    allProgressLogs: ProgressLog[],
+    habitTasksByDay: Record<string, Pulse[]>, // Now passed in
+    logsByDay: Record<string, ProgressLog[]>      // Now passed in
 ): Promise<number> {
     const monthStart = startOfMonth(referenceDate);
-    // Calculate progress only up to the selected date within the month
-    const monthEnd = referenceDate;
-    const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
+    const today = new Date();
+    const endOfReferenceMonth = endOfMonth(referenceDate);
 
-    let habitTasksByDay: Record<string, Pulse[]> = {};
-    for (const day of daysInMonth) {
-        habitTasksByDay[format(day, 'yyyy-MM-dd')] = await getHabitTasksForDate(day, allHabitTasks, allProgressLogs);
+    let calculationEndDate;
+
+    if (isAfter(monthStart, today)) {
+        // If the whole month is in the future, progress is 0
+        return 0;
     }
-    
+
+    if (isBefore(endOfReferenceMonth, today)) {
+        // If the whole month is in the past, calculate for the full month
+        calculationEndDate = endOfReferenceMonth;
+    } else {
+        // If it's the current month, calculate up to today
+        calculationEndDate = today;
+    }
+
+    const daysInMonth = eachDayOfInterval({ start: monthStart, end: calculationEndDate });
+
     let totalMonthlyWeightedProgress = 0;
     let totalMonthlyWeight = 0;
 
-    // Daily tasks for the month
+    // 1. Daily tasks progress for the month (using pre-computed data)
     daysInMonth.forEach(day => {
         const dayString = format(day, 'yyyy-MM-dd');
         const tasks = habitTasksByDay[dayString] ?? [];
         tasks.forEach(task => {
+            const logsForThisDay = logsByDay[dayString] || [];
+            const completionLog = logsForThisDay.find(log => log.habit_task_id === task.id);
+
+            let completedToday = !!completionLog;
+            let current_progress_value = completionLog?.progress_value;
+
+            if (task.measurement_type === 'quantitative' && task.measurement_goal?.target_count && completionLog) {
+                completedToday = (current_progress_value ?? 0) >= task.measurement_goal.target_count;
+            } else if (completionLog) {
+                completedToday = (completionLog.completion_percentage ?? 0) >= 1;
+            }
+
             let progressPercentage = 0;
             if (task.measurement_type === 'quantitative') {
                 const target = task.measurement_goal?.target_count ?? 1;
-                progressPercentage = target > 0 ? ((task.current_progress_value ?? 0) / target) : 0;
-            } else if (task.completedToday) {
+                progressPercentage = target > 0 ? ((current_progress_value ?? 0) / target) : 0;
+            } else if (completedToday) {
                 progressPercentage = 1;
             }
             totalMonthlyWeightedProgress += progressPercentage * task.weight;
@@ -539,7 +646,7 @@ async function calculateMonthlyProgress(
         });
     });
     
-    // Accumulative commitments for the month
+    // 2. Accumulative commitments for the month
     const monthlyCommitments = getActiveCommitments(allHabitTasks, allProgressLogs, monthStart);
     
     monthlyCommitments.forEach(task => {
@@ -549,13 +656,14 @@ async function calculateMonthlyProgress(
         let periodProgress = 0;
 
         if (task.frequency.startsWith('SEMANAL')) {
-            let weekStart = startOfWeek(monthStart, {weekStartsOn: 1});
+            let weekStart = startOfWeek(monthStart, { weekStartsOn: 1 });
             let weeksInPeriod = 0;
             let totalWeeklyProgress = 0;
 
-            while(weekStart <= monthEnd) {
-                const weekEnd = endOfWeek(weekStart, {weekStartsOn: 1});
-                
+            while(weekStart <= calculationEndDate) {
+                const currentWeekEnd = endOfWeek(weekStart, { weekStartsOn: 1 });
+                const weekEndForInterval = isAfter(currentWeekEnd, calculationEndDate) ? calculationEndDate : currentWeekEnd;
+
                 const isActiveThisWeek = getActiveCommitments([task], [], weekStart).length > 0;
                 if (!isActiveThisWeek) {
                     weekStart = addDays(weekStart, 7);
@@ -564,29 +672,19 @@ async function calculateMonthlyProgress(
 
                 weeksInPeriod++;
 
-                const logs = allProgressLogs.filter(log => log.habit_task_id === task.id && isWithinInterval(parseISO(log.completion_date), { start: weekStart, end: weekEnd }));
-                let weekCompletionPercentage = 0;
-                if (task.measurement_type === 'quantitative') {
-                    const totalValue = logs.reduce((sum, log) => sum + (log.progress_value ?? 0), 0);
-                    weekCompletionPercentage = target > 0 ? (totalValue / target) : 0;
-                } else if (task.measurement_type === 'binary') {
-                    const completions = logs.length;
-                    weekCompletionPercentage = target > 0 ? (completions / target) : 0;
-                }
+                const logs = allProgressLogs.filter(log => log.habit_task_id === task.id && isWithinInterval(parseISO(log.completion_date), { start: weekStart, end: weekEndForInterval }));
+                const totalValue = logs.reduce((sum, log) => sum + (log.progress_value ?? 0), 0);
+                const weekCompletionPercentage = target > 0 ? (totalValue / target) : 0;
+                
                 totalWeeklyProgress += weekCompletionPercentage;
                 weekStart = addDays(weekStart, 7);
             }
             if(weeksInPeriod > 0) periodProgress = totalWeeklyProgress / weeksInPeriod;
 
-        } else { // Monthly, Quarterly, Annual commitments
-            const logs = allProgressLogs.filter(log => log.habit_task_id === task.id && isWithinInterval(parseISO(log.completion_date), { start: monthStart, end: monthEnd }));
-             if (task.measurement_type === 'quantitative') {
-                const totalValue = logs.reduce((sum, log) => sum + (log.progress_value ?? 0), 0);
-                periodProgress = target > 0 ? (totalValue / target) : 0;
-            } else if (task.measurement_type === 'binary') {
-                const completions = logs.length;
-                periodProgress = target > 0 ? (completions / target) : 0;
-            }
+        } else { // Monthly, Quarterly commitments for the month
+            const logs = allProgressLogs.filter(log => log.habit_task_id === task.id && isWithinInterval(parseISO(log.completion_date), { start: monthStart, end: calculationEndDate }));
+            const totalValue = logs.reduce((sum, log) => sum + (log.progress_value ?? 0), 0);
+            periodProgress = target > 0 ? (totalValue / target) : 0;
         }
         
         totalMonthlyWeightedProgress += periodProgress * task.weight;
@@ -599,8 +697,41 @@ async function calculateMonthlyProgress(
 }
 
 
-export async function getCalendarData(monthDate: Date) {
-    const supabase = createClient();
+
+/**
+ * Pre-calculates which tasks are active on each day of a given period.
+ * This is a performance optimization to avoid re-calculating active status for every task on every day.
+ * @param allHabitTasks All tasks to be processed.
+ * @param periodStart The start of the date interval.
+ * @param periodEnd The end of the date interval.
+ * @returns A record where keys are date strings ('yyyy-MM-dd') and values are arrays of tasks active on that day.
+ */
+function getActiveTasksForPeriod(allHabitTasks: Pulse[], periodStart: Date, periodEnd: Date): Record<string, Pulse[]> {
+    const activeTasksByDay: Record<string, Pulse[]> = {};
+    const daysInPeriod = eachDayOfInterval({ start: periodStart, end: periodEnd });
+
+    // Initialize the map for all days in the period
+    for (const day of daysInPeriod) {
+        activeTasksByDay[format(day, 'yyyy-MM-dd')] = [];
+    }
+
+    // Iterate over each task once
+    for (const task of allHabitTasks) {
+        // Iterate over each day in the period to check if the task is active
+        for (const day of daysInPeriod) {
+            if (isTaskActiveOnDate(task, day)) {
+                const dayString = format(day, 'yyyy-MM-dd');
+                activeTasksByDay[dayString].push(task);
+            }
+        }
+    }
+
+    return activeTasksByDay;
+}
+
+
+export async function getCalendarData(monthDate: Date, groupId: string | null) {
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
 
     const monthStart = startOfMonth(monthDate);
@@ -611,120 +742,140 @@ export async function getCalendarData(monthDate: Date) {
     
     const daysInView = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
 
-    const { data: lifePrks, error: lifePrksError } = await supabase.from('life_prks').select('*').eq('archived', false).eq('user_id', userId);
-    if (lifePrksError) {
-        await logError(lifePrksError, {at: 'getCalendarData - lifePrks'});
-        throw lifePrksError;
+    // --- 1. Fetch all data concurrently ---
+    let lifePrksQuery = supabase.from('life_prks').select('*').eq('archived', false);
+    if (groupId) {
+        lifePrksQuery = lifePrksQuery.eq('group_id', groupId);
+    } else {
+        lifePrksQuery = lifePrksQuery.eq('user_id', userId).is('group_id', null);
     }
 
-    const { data: areaPrks, error: areaPrksError } = await supabase.from('area_prks').select('*').eq('archived', false).eq('user_id', userId);
-    if (areaPrksError) {
-        await logError(areaPrksError, {at: 'getCalendarData - areaPrks'});
-        throw areaPrksError;
+    let areaPrksQuery = supabase.from('area_prks').select('*').eq('archived', false);
+    if (groupId) {
+        areaPrksQuery = areaPrksQuery.eq('group_id', groupId);
+    } else {
+        areaPrksQuery = areaPrksQuery.eq('user_id', userId).is('group_id', null);
     }
 
-    const allHabitTasks = await fetchAndMapHabitTasks(userId);
+    const allHabitTasksPromise = fetchAndMapHabitTasks(userId, groupId);
 
-    const { data: allProgressLogs, error: progressLogsError } = await supabase.from('progress_logs').select('*').eq('user_id', userId).gte('completion_date', format(calendarStart, 'yyyy-MM-dd')).lte('completion_date', format(calendarEnd, 'yyyy-MM-dd'));
-    if (progressLogsError) {
-        await logError(progressLogsError, {at: 'getCalendarData - allProgressLogs'});
-        throw progressLogsError;
+    const [
+        { data: lifePrks, error: lifePrksError },
+        { data: areaPrks, error: areaPrksError },
+        allHabitTasks,
+    ] = await Promise.all([
+        lifePrksQuery,
+        areaPrksQuery,
+        allHabitTasksPromise
+    ]);
+
+    if (lifePrksError) { await logError(lifePrksError, { at: 'getCalendarData - lifePrks' }); throw lifePrksError; }
+    if (areaPrksError) { await logError(areaPrksError, { at: 'getCalendarData - areaPrks' }); throw areaPrksError; }
+
+    let progressLogsQuery = supabase.from('progress_logs').select('*')
+        .gte('completion_date', format(calendarStart, 'yyyy-MM-dd'))
+        .lte('completion_date', format(calendarEnd, 'yyyy-MM-dd'));
+
+    if (groupId) {
+        progressLogsQuery = progressLogsQuery.in('habit_task_id', allHabitTasks.map(t => t.id));
+    } else {
+        progressLogsQuery = progressLogsQuery.eq('user_id', userId);
     }
 
+    const { data: allProgressLogs, error: progressLogsError } = await progressLogsQuery;
+    if (progressLogsError) { await logError(progressLogsError, { at: 'getCalendarData - allProgressLogs' }); throw progressLogsError; }
+
+    // --- 2. Pre-process and organize data for efficient lookups ---
+
+    // Group all active tasks by day for the entire visible period
+    const activeTasksForPeriod = getActiveTasksForPeriod(allHabitTasks, calendarStart, calendarEnd);
+
+    // Group all progress logs by day for O(1) lookup
+    const logsByDay = allProgressLogs.reduce((acc, log) => {
+        const day = format(parseISO(log.completion_date), 'yyyy-MM-dd');
+        if (!acc[day]) {
+            acc[day] = [];
+        }
+        acc[day].push(log);
+        return acc;
+    }, {} as Record<string, ProgressLog[]>);
+
+    // --- 3. Calculate daily progress and prepare task data for the client ---
     const dailyProgress: DailyProgressSnapshot[] = [];
     const habitTasksByDay: Record<string, Pulse[]> = {};
 
     for (const day of daysInView) {
-        const habitTasksForDay = await getHabitTasksForDate(day, allHabitTasks, allProgressLogs);
-        habitTasksByDay[format(day, 'yyyy-MM-dd')] = habitTasksForDay;
+        const dayString = format(day, 'yyyy-MM-dd');
+        const baseTasksForDay = activeTasksForPeriod[dayString] || [];
+        const logsForDay = logsByDay[dayString] || [];
 
+        // Enrich tasks with completion data for this specific day
+        const habitTasksForDay = baseTasksForDay.map(task => {
+            const completionLog = logsForDay.find(log => log.habit_task_id === task.id);
+            
+            let completedToday = !!completionLog;
+            if (task.measurement_type === 'quantitative' && task.measurement_goal?.target_count && completionLog) {
+                completedToday = (completionLog.progress_value ?? 0) >= task.measurement_goal.target_count;
+            } else if (completionLog) {
+                completedToday = (completionLog.completion_percentage ?? 0) >= 1;
+            }
+
+            return {
+                ...task,
+                completedToday: completedToday,
+                current_progress_value: completionLog?.progress_value,
+                completion_date: completionLog ? dayString : ((task.type === 'task' && !task.frequency) ? task.completion_date : undefined),
+            };
+        });
+        
+        habitTasksByDay[dayString] = habitTasksForDay;
+
+        // Calculate overall progress for the day
         if (habitTasksForDay.length > 0) {
             const { lifePrksWithProgress } = calculateProgressForDate(day, lifePrks, areaPrks, habitTasksForDay);
-            
             const relevantLifePrks = lifePrksWithProgress.filter(lp => lp.progress !== null);
             const overallProgress = relevantLifePrks.length > 0
                 ? relevantLifePrks.reduce((sum, lp) => sum + (lp.progress ?? 0), 0) / relevantLifePrks.length
                 : 0;
 
             dailyProgress.push({
-                snapshot_date: format(day, 'yyyy-MM-dd'),
+                snapshot_date: dayString,
                 progress: isNaN(overallProgress) ? 0 : overallProgress,
             });
         } else {
-            // Ensure days with no tasks still appear in the map for the calendar view
-             dailyProgress.push({
-                snapshot_date: format(day, 'yyyy-MM-dd'),
-                progress: 0,
-            });
+            dailyProgress.push({ snapshot_date: dayString, progress: 0 });
         }
     }
     
-    const commitments = getActiveCommitments(allHabitTasks, allProgressLogs, monthDate)
-        .map(task => {
-            let periodStartForLogs: Date, periodEndForLogs: Date;
-            
-            const freq = task.frequency;
-            
-            if(freq?.startsWith('SEMANAL')) {
-                periodStartForLogs = startOfWeek(monthDate, { weekStartsOn: 1 });
-                periodEndForLogs = endOfWeek(monthDate, { weekStartsOn: 1 });
-            } else if (freq?.startsWith('MENSUAL')) {
-                periodStartForLogs = startOfMonth(monthDate);
-                periodEndForLogs = endOfMonth(monthDate);
-            } else if (freq?.startsWith('TRIMESTRAL')) {
-                periodStartForLogs = startOfQuarter(monthDate);
-                periodEndForLogs = endOfQuarter(monthDate);
-            } else { // ANUAL
-                periodStartForLogs = startOfYear(monthDate);
-                periodEndForLogs = endOfYear(monthDate);
-            }
-
-            const logs = allProgressLogs.filter(log => 
-                log.habit_task_id === task.id &&
-                isWithinInterval(parseISO(log.completion_date), { start: periodStartForLogs, end: periodEndForLogs })
-            );
-
-            const totalProgressValue = logs.reduce((sum, log) => sum + (log.progress_value ?? (log.completion_percentage ? 1 : 0)), 0);
-            
-            let isCompletedForPeriod = false;
-            const target = task.measurement_goal?.target_count ?? 1;
-            if (target > 0) {
-                isCompletedForPeriod = totalProgressValue >= target;
-            }
-
-            return {
-                ...task,
-                current_progress_value: totalProgressValue,
-                completedToday: isCompletedForPeriod, // "completedToday" means "completed for the period"
-                logs: logs,
-            };
-        });
+    // --- 4. Calculate Commitments, Weekly, and Monthly progress using pre-computed data ---
+    
+    // Note: getActiveCommitments is called with all tasks, but its internal log filtering is now faster.
+    const commitments = getActiveCommitments(allHabitTasks, allProgressLogs, monthDate);
 
     const weeklyProgress: WeeklyProgressSnapshot[] = [];
-    let weekIndex = 0;
-    while(weekIndex < daysInView.length) {
-        const weekStart = daysInView[weekIndex];
-        const progress = await calculateWeeklyProgress(weekStart, allHabitTasks, allProgressLogs);
-
+    for (let i = 0; i < daysInView.length; i += 7) {
+        const weekStart = daysInView[i];
+        // Pass the pre-computed maps to the calculation function
+        const progress = await calculateWeeklyProgress(weekStart, allHabitTasks, allProgressLogs, habitTasksByDay, logsByDay);
         weeklyProgress.push({
             id: format(weekStart, 'yyyy-MM-dd'),
             progress: progress,
         });
-
-        weekIndex += 7;
     }
 
-    const monthlyProgress = await calculateMonthlyProgress(monthDate, allHabitTasks, allProgressLogs);
+    const monthlyProgress = await calculateMonthlyProgress(monthDate, allHabitTasks, allProgressLogs, habitTasksByDay, logsByDay);
 
     return {
         dailyProgress,
         habitTasks: habitTasksByDay,
         weeklyProgress,
-        monthlyProgress: monthlyProgress,
+        monthlyProgress,
         areaPrks,
         commitments,
+        orbits: lifePrks, // Add orbits to the return object
     };
 }
+
 
 
 /**
@@ -874,104 +1025,177 @@ function calculatePeriodProgress(tasks: Pulse[], logs: ProgressLog[], startDate:
 
 export async function getAnalyticsData(filters: {
     level: 'orbits' | 'phases' | 'pulses';
+    timePeriod: 'all' | 'last30d' | 'last3m' | { from: Date; to: Date };
+    scale: 'daily' | 'weekly' | 'monthly';
     orbitId?: string;
     phaseId?: string;
-}): Promise<AnalyticsData> {
-    const supabase = createClient();
+    pulseId?: string;
+}, groupId: string | null): Promise<AnalyticsData> {
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
+
+    // 1. Determine date range
     const today = new Date();
-    const historicalStartDate = new Date(2020, 0, 1);
+    let startDate: Date;
+    let endDate: Date = endOfDay(today);
 
-    const allPulses = await fetchAndMapHabitTasks(userId);
-    const { data: allProgressLogs, error: progressLogsError } = await supabase.from('progress_logs').select('*').eq('user_id', userId);
-    if (progressLogsError) throw progressLogsError;
-
-    const { data: allOrbits, error: lifePrksError } = await supabase.from('life_prks').select('*').eq('archived', false).eq('user_id', userId);
-    if (lifePrksError) throw lifePrksError;
-
-    const { data: allPhases, error: areaPrksError } = await supabase.from('area_prks').select('*').eq('archived', false).eq('user_id', userId);
-    if (areaPrksError) throw areaPrksError;
-
-    // --- Calculate Overall Progress ---
-    const orbitsWithProgress = allOrbits.map(orbit => {
-        const orbitPhases = allPhases.filter(p => p.life_prk_id === orbit.id);
-        if (orbitPhases.length === 0) return { ...orbit, progress: 0 };
-        const phaseIds = orbitPhases.map(p => p.id);
-        const orbitPulses = allPulses.filter(p => p.phase_ids.some(pid => phaseIds.includes(pid)));
-        const progress = calculatePeriodProgress(orbitPulses, allProgressLogs, historicalStartDate, today);
-        return { ...orbit, progress };
-    });
-    const totalOverallProgress = orbitsWithProgress.reduce((sum, o) => sum + o.progress, 0);
-    const overallProgress = orbitsWithProgress.length > 0 ? Math.round(totalOverallProgress / orbitsWithProgress.length) : 0;
-
-    // --- Prepare Data for Charts and Stats ---
-    let chartData: { name: string; progress: number, remaining: number }[] = [];
-    let stats = {
-        avgProgress: 0,
-        stat1_value: 0, stat1_label: '',
-        stat2_value: 0, stat2_label: '',
-        stat3_value: 0, stat3_label: '',
-    };
-    
-    if (filters.level === 'orbits') {
-        chartData = orbitsWithProgress.map(o => {
-            const progress = Math.round(o.progress);
-            return { name: o.title, progress: progress, remaining: Math.max(0, 100 - progress) };
-        });
-        stats.avgProgress = overallProgress;
-        stats.stat1_value = allOrbits.length;
-        stats.stat1_label = 'órbitas';
-        stats.stat2_value = allPhases.length;
-        stats.stat2_label = 'fases totales';
-        stats.stat3_value = allPulses.length;
-        stats.stat3_label = 'pulsos totales';
-
-    } else if (filters.level === 'phases') {
-        const phasesWithProgress = allPhases.map(phase => {
-            const phasePulses = allPulses.filter(p => p.phase_ids.includes(phase.id));
-            const progress = calculatePeriodProgress(phasePulses, allProgressLogs, historicalStartDate, today);
-            return { ...phase, progress };
-        });
-
-        chartData = phasesWithProgress.map(p => {
-            const progress = Math.round(p.progress);
-            return { name: p.title, progress: progress, remaining: Math.max(0, 100 - progress) };
-        });
-
-        const totalProgress = phasesWithProgress.reduce((sum, p) => sum + p.progress, 0);
-        stats.avgProgress = phasesWithProgress.length > 0 ? Math.round(totalProgress / phasesWithProgress.length) : 0;
-        stats.stat1_value = allOrbits.length;
-        stats.stat1_label = 'órbitas';
-        stats.stat2_value = allPhases.length;
-        stats.stat2_label = 'fases';
-        stats.stat3_value = allPulses.length;
-        stats.stat3_label = 'pulsos';
-    
-    } else if (filters.level === 'pulses') {
-        const pulsesWithProgress = allPulses.map(p => ({
-            ...p,
-            progress: calculatePeriodProgress([p], allProgressLogs, historicalStartDate, today)
-        }));
-
-        chartData = pulsesWithProgress.map(p => {
-            const progress = Math.round(p.progress ?? 0);
-            return { name: p.title, progress: progress, remaining: Math.max(0, 100 - progress) };
-        });
-        
-        const totalProgress = pulsesWithProgress.reduce((sum, p) => sum + (p.progress ?? 0), 0);
-        stats.avgProgress = pulsesWithProgress.length > 0 ? Math.round(totalProgress / pulsesWithProgress.length) : 0;
-        const completed = pulsesWithProgress.filter(p => (p.progress ?? 0) >= 100).length;
-        
-        stats.stat1_value = allOrbits.length;
-        stats.stat1_label = 'órbitas';
-        stats.stat2_value = allPhases.length;
-        stats.stat2_label = 'fases';
-        stats.stat3_value = completed;
-        stats.stat3_label = `de ${allPulses.length} pulsos completados`;
+    if (filters.timePeriod === 'last30d') {
+        startDate = startOfDay(subDays(today, 29));
+    } else if (filters.timePeriod === 'last3m') {
+        startDate = startOfDay(subMonths(today, 3));
+    } else if (filters.timePeriod === 'all') {
+        // Fetch all data, but we need a reasonable start date for logs
+        const { data: firstLog } = await supabase.from('progress_logs').select('completion_date').eq('user_id', userId).order('completion_date', { ascending: true }).limit(1).single();
+        startDate = firstLog ? parseISO(firstLog.completion_date) : startOfYear(today);
+    } else {
+        startDate = startOfDay(filters.timePeriod.from);
+        endDate = endOfDay(filters.timePeriod.to);
     }
 
+    // 2. Fetch all base data concurrently
+    const allPulsesPromise = fetchAndMapHabitTasks(userId, groupId);
+    
+    const lifePrksQuery = supabase.from('life_prks').select('*').eq('archived', false).eq(groupId ? 'group_id' : 'user_id', groupId || userId);
+    const areaPrksQuery = supabase.from('area_prks').select('*').eq('archived', false).eq(groupId ? 'group_id' : 'user_id', groupId || userId);
+
+    const [ allPulses, { data: allOrbits, error: lifePrksError }, { data: allPhases, error: areaPrksError } ] = await Promise.all([
+        allPulsesPromise, 
+        lifePrksQuery, 
+        areaPrksQuery
+    ]);
+
+    if (lifePrksError) throw lifePrksError;
+    if (areaPrksError) throw areaPrksError;
+
+    let progressLogsQuery = supabase.from('progress_logs').select('*')
+        .gte('completion_date', format(startDate, 'yyyy-MM-dd'))
+        .lte('completion_date', format(endDate, 'yyyy-MM-dd'));
+
+    if (groupId) {
+        const pulseIds = allPulses.map(p => p.id);
+        progressLogsQuery = progressLogsQuery.in('habit_task_id', pulseIds);
+    } else {
+        progressLogsQuery = progressLogsQuery.eq('user_id', userId);
+    }
+
+    const { data: allProgressLogs, error: progressLogsError } = await progressLogsQuery;
+    if (progressLogsError) throw progressLogsError;
+
+    // 3. Filter data based on the selected level and IDs
+    let targetPulses = allPulses;
+    let itemsToGroup: (Orbit | Phase | Pulse)[] = [];
+    let itemNameKey: 'title' = 'title';
+
+    if (filters.level === 'pulses') {
+        if (filters.pulseId) {
+            targetPulses = allPulses.filter(p => p.id === filters.pulseId);
+        } else if (filters.phaseId) {
+            targetPulses = allPulses.filter(p => p.phase_ids.includes(filters.phaseId));
+            itemsToGroup = targetPulses;
+        } else if (filters.orbitId) {
+            const phaseIdsInOrbit = allPhases.filter(p => p.life_prk_id === filters.orbitId).map(p => p.id);
+            targetPulses = allPulses.filter(p => p.phase_ids.some(pid => phaseIdsInOrbit.includes(pid)));
+            itemsToGroup = targetPulses;
+        }
+    } else if (filters.level === 'phases') {
+        if (filters.phaseId) {
+            targetPulses = allPulses.filter(p => p.phase_ids.includes(filters.phaseId));
+        } else if (filters.orbitId) {
+            const phaseIdsInOrbit = allPhases.filter(p => p.life_prk_id === filters.orbitId).map(p => p.id);
+            targetPulses = allPulses.filter(p => p.phase_ids.some(pid => phaseIdsInOrbit.includes(pid)));
+            itemsToGroup = allPhases.filter(p => phaseIdsInOrbit.includes(p.id));
+        } else {
+            itemsToGroup = allPhases;
+        }
+    } else { // Orbits
+        if (filters.orbitId) {
+            const phaseIdsInOrbit = allPhases.filter(p => p.life_prk_id === filters.orbitId).map(p => p.id);
+            targetPulses = allPulses.filter(p => p.phase_ids.some(pid => phaseIdsInOrbit.includes(pid)));
+            itemsToGroup = allPhases.filter(p => phaseIdsInOrbit.includes(p.id));
+        } else {
+            itemsToGroup = allOrbits;
+        }
+    }
+
+    // 4. Calculate time-series data for the chart
+    const chartData: AnalyticsData['chartData'] = [];
+    let intervalFunction: (interval: { start: Date; end: Date; }) => Date[];
+
+    if (filters.scale === 'weekly') {
+        intervalFunction = (interval) => eachWeekOfInterval(interval, { weekStartsOn: 1 });
+    } else if (filters.scale === 'monthly') {
+        intervalFunction = eachMonthOfInterval;
+    } else {
+        intervalFunction = eachDayOfInterval;
+    }
+
+    const intervals = intervalFunction({ start: startDate, end: endDate });
+
+    for (const intervalStart of intervals) {
+        let intervalEnd: Date;
+        if (filters.scale === 'weekly') {
+            intervalEnd = endOfWeek(intervalStart, { weekStartsOn: 1 });
+        } else if (filters.scale === 'monthly') {
+            intervalEnd = endOfMonth(intervalStart);
+        } else {
+            intervalEnd = endOfDay(intervalStart);
+        }
+
+        const progress = calculatePeriodProgress(targetPulses, allProgressLogs, intervalStart, intervalEnd);
+        
+        const chartEntry: { date: string; progress: number; [key: string]: any } = {
+            date: format(intervalStart, 'yyyy-MM-dd'),
+            progress: Math.round(progress),
+        };
+
+        // Calculate progress for each item in the subgroup (for stacked charts)
+        if (itemsToGroup.length > 0) {
+            for (const item of itemsToGroup) {
+                let itemPulses: Pulse[];
+                if ('life_prk_id' in item) { // It's a Phase
+                    itemPulses = allPulses.filter(p => p.phase_ids.includes(item.id));
+                } else if ('phase_ids' in item) { // It's a Pulse
+                    itemPulses = [item as Pulse];
+                } else { // It's an Orbit
+                    const phaseIds = allPhases.filter(p => p.life_prk_id === item.id).map(p => p.id);
+                    itemPulses = allPulses.filter(p => p.phase_ids.some(pid => phaseIds.includes(pid)));
+                }
+                const itemProgress = calculatePeriodProgress(itemPulses, allProgressLogs, intervalStart, intervalEnd);
+                chartEntry[item.title] = Math.round(itemProgress);
+            }
+        }
+        
+        chartData.push(chartEntry);
+    }
+
+    // 5. Calculate KPIs
+    const overallProgress = calculatePeriodProgress(targetPulses, allProgressLogs, startDate, endDate);
+    
+    let bestDay = { date: 'N/A', progress: 0 };
+    let worstDay = { date: 'N/A', progress: 100 };
+    let totalProgress = 0;
+    let daysWithActivity = 0;
+
+    chartData.forEach(d => {
+        if (d.progress > 0) {
+            totalProgress += d.progress;
+            daysWithActivity++;
+        }
+        if (d.progress > bestDay.progress) bestDay = { date: d.date, progress: d.progress };
+        if (d.progress < worstDay.progress) worstDay = { date: d.date, progress: d.progress };
+    });
+
+    const averageProgress = daysWithActivity > 0 ? totalProgress / daysWithActivity : 0;
+    const consistency = intervals.length > 0 ? (daysWithActivity / intervals.length) * 100 : 0;
+
     return {
-        stats: { ...stats, overallProgress },
+        kpis: {
+            overallProgress: Math.round(overallProgress),
+            consistency: Math.round(consistency),
+            averageProgress: Math.round(averageProgress),
+            bestDay: { ...bestDay, date: bestDay.date !== 'N/A' ? format(parseISO(bestDay.date), 'd MMM', {locale: es}) : 'N/A' },
+            worstDay: { ...worstDay, date: worstDay.date !== 'N/A' ? format(parseISO(worstDay.date), 'd MMM', {locale: es}) : 'N/A' },
+        },
         chartData,
         allOrbits,
         allPhases,
@@ -980,26 +1204,61 @@ export async function getAnalyticsData(filters: {
 }
 
 
+export async function getGroupsForUser() {
+    const supabase = await createClient();
+    const userId = await getCurrentUserId();
+
+    const { data, error } = await supabase
+        .from('group_members')
+        .select('groups(*)')
+        .eq('user_id', userId);
+
+    if (error) {
+        await logError(error, { at: 'getGroupsForUser' });
+        throw error;
+    }
+
+    return data.map(item => item.groups).filter(Boolean);
+}
+
 /**
  * Fetches all strategic data for the Panel view, ignoring date filters.
  * Progress is calculated based on all available logs up to the current date.
  */
-export async function getPanelData() {
-    const supabase = createClient();
+export async function getPanelData(groupId: string | null) {
+    const supabase = await createClient();
     const userId = await getCurrentUserId();
     const today = new Date();
     // A very early date to consider all historical data.
     const historicalStartDate = new Date(2020, 0, 1);
 
-    const { data: lifePrks, error: lifePrksError } = await supabase.from('life_prks').select('*').eq('archived', false).eq('user_id', userId);
+    let lifePrksQuery = supabase.from('life_prks').select('*').eq('archived', false);
+    if (groupId) {
+        lifePrksQuery = lifePrksQuery.eq('group_id', groupId);
+    } else {
+        lifePrksQuery = lifePrksQuery.eq('user_id', userId).is('group_id', null);
+    }
+    const { data: lifePrks, error: lifePrksError } = await lifePrksQuery;
     if (lifePrksError) throw lifePrksError;
 
-    const { data: areaPrks, error: areaPrksError } = await supabase.from('area_prks').select('*').eq('archived', false).eq('user_id', userId);
+    let areaPrksQuery = supabase.from('area_prks').select('*').eq('archived', false);
+    if (groupId) {
+        areaPrksQuery = areaPrksQuery.eq('group_id', groupId);
+    } else {
+        areaPrksQuery = areaPrksQuery.eq('user_id', userId).is('group_id', null);
+    }
+    const { data: areaPrks, error: areaPrksError } = await areaPrksQuery;
     if (areaPrksError) throw areaPrksError;
 
-    const allHabitTasks = await fetchAndMapHabitTasks(userId);
+    const allHabitTasks = await fetchAndMapHabitTasks(userId, groupId);
 
-    const { data: allProgressLogs, error: progressLogsError } = await supabase.from('progress_logs').select('*').eq('user_id', userId);
+    let progressLogsQuery = supabase.from('progress_logs').select('*');
+    if (groupId) {
+        progressLogsQuery = progressLogsQuery.in('habit_task_id', allHabitTasks.map(t => t.id));
+    } else {
+        progressLogsQuery = progressLogsQuery.eq('user_id', userId);
+    }
+    const { data: allProgressLogs, error: progressLogsError } = await progressLogsQuery;
     if (progressLogsError) throw progressLogsError;
     
     // Calculate overall progress for each pulse up to today
@@ -1041,7 +1300,63 @@ export async function getPanelData() {
     };
 }
 
-    
+export async function getGroupMembers(groupId: string): Promise<{ id: string; email: string | undefined; role: string; avatar_url: string | undefined; full_name: string | undefined }[]> {
+    const supabase = await createClient();
+    const userId = await getCurrentUserId();
 
-    
+    // First, verify the current user is a member of the group they are trying to view.
+    const { data: memberCheck, error: memberCheckError } = await supabase
+        .from('group_members')
+        .select('group_id')
+        .eq('user_id', userId)
+        .eq('group_id', groupId)
+        .single();
 
+    if (memberCheckError || !memberCheck) {
+        await logError(new Error('User is not a member of this group or group does not exist.'), { at: 'getGroupMembers', groupId });
+        throw new Error("Access denied: You are not a member of this group.");
+    }
+
+    // Call the new database function.
+    const { data: members, error } = await supabase
+        .rpc('get_group_members_with_details', { p_group_id: groupId });
+
+    if (error) {
+        await logError(error, { at: 'getGroupMembers RPC call', groupId });
+        throw error;
+    }
+
+    return members || [];
+}
+
+export async function getGroupDetails(groupId: string) {
+    const supabase = await createClient();
+    const userId = await getCurrentUserId();
+
+    // Verify the current user is a member of the group.
+    const { data: memberCheck, error: memberCheckError } = await supabase
+        .from('group_members')
+        .select('group_id')
+        .eq('user_id', userId)
+        .eq('group_id', groupId)
+        .single();
+
+    if (memberCheckError || !memberCheck) {
+        await logError(new Error('User is not a member of this group or group does not exist.'), { at: 'getGroupDetails', groupId });
+        throw new Error("Access denied: You are not a member of this group.");
+    }
+
+    // Fetch the group details.
+    const { data: group, error } = await supabase
+        .from('groups')
+        .select('*')
+        .eq('id', groupId)
+        .single();
+
+    if (error) {
+        await logError(error, { at: 'getGroupDetails', groupId });
+        throw error;
+    }
+
+    return group;
+}

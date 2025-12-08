@@ -144,14 +144,15 @@ export function CalendarPageClient({ initialData, initialMonthString }: Calendar
     };
 
 
-    return (
-        <div className="flex flex-1 h-screen overflow-hidden">
-            <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-8 overflow-y-auto">
+        return (
+        <div className="flex flex-col flex-1">
+            <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <CalendarView
                     initialMonthString={initialMonthString}
                     dailyProgressData={initialData.dailyProgress}
                     habitTasksData={initialData.habitTasks}
                     areaPrks={initialData.areaPrks || []}
+                    orbits={initialData.orbits || []}
                     weeklyProgressData={initialData.weeklyProgress || []}
                     monthlyProgress={initialData.monthlyProgress}
                     commitments={initialData.commitments}
@@ -161,20 +162,17 @@ export function CalendarPageClient({ initialData, initialMonthString }: Calendar
                     onEditCommitment={handleOpenEditPulseDialog}
                     onArchiveCommitment={(id) => handleArchivePulse(id, new Date())}
                 />
+                <div className="mt-8">
+                    <CommitmentsSidebar
+                        commitments={initialData.commitments || []}
+                        selectedDate={referenceDate}
+                        isOpen={true}
+                        setIsOpen={() => {}}
+                        onAddCommitment={handleOpenAddCommitmentDialog}
+                        onEditCommitment={handleOpenEditPulseDialog}
+                    />
+                </div>
             </main>
-            <aside className={cn(
-                "hidden lg:flex bg-card/50 border-l transition-all duration-300 ease-in-out", 
-                isSidebarOpen ? 'w-96 p-4' : 'w-16 p-2 items-center justify-center'
-            )}>
-                <CommitmentsSidebar
-                    commitments={initialData.commitments || []}
-                    selectedDate={referenceDate}
-                    isOpen={isSidebarOpen}
-                    setIsOpen={setSidebarOpen}
-                    onAddCommitment={handleOpenAddCommitmentDialog}
-                    onEditCommitment={handleOpenEditPulseDialog}
-                />
-            </aside>
             <DayDetailDialog 
                 isOpen={isDayDetailOpen}
                 onOpenChange={handleCloseDayDetail}

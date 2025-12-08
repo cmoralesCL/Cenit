@@ -59,8 +59,15 @@ function formatLogMessage(error: any, contextData?: any): string {
 }
 
 export async function logError(error: any, contextData?: any): Promise<void> {
+    // Log raw objects for interactive terminal inspection
+    console.error("--- RAW ERROR OBJECT ---", error);
+    if (contextData) {
+        console.error("--- RAW CONTEXT OBJECT ---", contextData);
+    }
+
     const message = formatLogMessage(error, contextData);
 
+    // Log the formatted, detailed string for readability and file logging
     console.error(message);
 
     try {

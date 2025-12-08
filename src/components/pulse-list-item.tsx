@@ -2,7 +2,7 @@
 
 'use client';
 
-import { CheckCircle, Circle, Zap } from 'lucide-react';
+import { CheckCircle, Circle, Zap, Star } from 'lucide-react';
 import type { Pulse, ColorTheme } from '@/lib/types';
 import { THEMES } from '@/lib/themes';
 import { Badge } from './ui/badge';
@@ -23,6 +23,23 @@ interface PulseListItemProps {
   onEdit: () => void;
   onArchive: () => void;
 }
+
+function ImpactRating({ rating }: { rating: number }) {
+    return (
+      <div className="flex items-center gap-0.5" title={`Impacto: ${rating}/5`}>
+        {[...Array(5)].map((_, i) => (
+          <Star
+            key={i}
+            className={cn(
+              "h-4 w-4",
+              i < rating ? "fill-yellow-400 text-yellow-500" : "fill-muted stroke-muted-foreground/50"
+            )}
+          />
+        ))}
+      </div>
+    );
+}
+
 
 export function PulseListItem({
   pulse,
@@ -45,14 +62,14 @@ export function PulseListItem({
             <p className="font-medium text-foreground">{pulse.title}</p>
             <div className="flex items-center gap-2 mt-1">
                 <Badge variant="secondary" className="capitalize">{pulse.type === 'habit' ? 'Hábito' : 'Tarea'}</Badge>
-                <Badge variant="outline">Impacto: {pulse.weight}/5</Badge>
+                <ImpactRating rating={pulse.weight} />
             </div>
         </div>
         <div className="flex items-center gap-2">
             {pulse.progress !== undefined && (
                 <ProgressCircle progress={progress} className="h-10 w-10" />
             )}
-            {pulse.is_critical && <Zap className="h-4 w-4 text-yellow-500" />}
+            {pulse.is_critical && <Zap className="h-4 w-4 text-yellow-500" title="Pulso Crítico" />}
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="h-7 w-7">

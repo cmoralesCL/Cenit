@@ -24,9 +24,10 @@ import { Separator } from './ui/separator';
 
 interface SimpleTaskListProps {
   initialTasks: SimpleTask[];
+  userId?: string;
 }
 
-export function SimpleTaskList({ initialTasks }: SimpleTaskListProps) {
+export function SimpleTaskList({ initialTasks, userId }: SimpleTaskListProps) {
   const [tasks, setTasks] = useState(initialTasks);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [dueDate, setDueDate] = useState<Date | undefined>();
@@ -253,7 +254,7 @@ export function SimpleTaskList({ initialTasks }: SimpleTaskListProps) {
 
         <div className="space-y-3">
           {tasks.map((task) => {
-            const isOwner = !task.owner_email; // If owner_email is null, current user is the owner
+            const isOwner = task.user_id === userId;
             return (
             <div
               key={task.id}
@@ -300,8 +301,10 @@ export function SimpleTaskList({ initialTasks }: SimpleTaskListProps) {
                                     Asignada a: {task.assigned_to_email}
                                 </Badge>
                             )}
-                            {!isOwner && (
-                                <Badge variant="outline" className="mt-1 sm:mt-0 max-w-fit">Compartida por {task.owner_email}</Badge>
+                            {isOwner ? (
+                                <Badge variant="outline" className="mt-1 sm:mt-0 max-w-fit">Creada por ti</Badge>
+                            ) : (
+                                <Badge variant="outline" className="mt-1 sm:mt-0 max-w-fit">Creada por {task.owner_email}</Badge>
                             )}
                         </div>
                     </>

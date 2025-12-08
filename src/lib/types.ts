@@ -1,13 +1,20 @@
-
-
 import { QuoteOfTheDayOutput } from "@/ai/flows/get-quote-of-the-day";
 
 export type ColorTheme = 'mint' | 'sapphire' | 'amethyst' | 'coral' | 'rose' | 'solar';
+
+export interface Group {
+  id: string;
+  name: string;
+  description: string | null;
+  owner_id: string;
+  created_at: string;
+}
 
 // Replaces LifePrk
 export interface Orbit {
   id: string;
   user_id: string;
+  group_id: string | null;
   title: string;
   description: string;
   created_at?: string;
@@ -20,6 +27,7 @@ export interface Orbit {
 export interface Phase {
   id: string;
   user_id: string;
+  group_id: string | null;
   life_prk_id: string; // Corresponds to life_prk_id in Supabase
   title: string;
   description?: string | null;
@@ -57,6 +65,7 @@ export type HabitFrequency =
 export interface Pulse {
   id: string;
   user_id: string;
+  group_id: string | null;
   phase_ids: string[]; // Replaces area_prk_ids
   title: string;
   description?: string | null;
@@ -125,19 +134,30 @@ export interface KpiData {
 
 
 export type AnalyticsData = {
-  stats: {
-    avgProgress: number;
+  kpis: {
     overallProgress: number;
-    stat1_value: number;
-    stat1_label: string;
-    stat2_value: number;
-    stat2_label: string;
-    stat3_value: number;
-    stat3_label: string;
+    // completionRate: number; // This was a placeholder, let's use consistency
+    consistency: number;
+    bestDay: { date: string; progress: number };
+    worstDay: { date: string; progress: number };
+    averageProgress: number;
   };
-  chartData: { name: string; progress: number, remaining: number }[];
+  chartData: {
+    date: string; // Represents the start of the period (day, week, or month)
+    progress: number;
+    [key: string]: any; // To allow for dynamic, colored series
+  }[];
   // Data for filters
   allOrbits: Orbit[];
   allPhases: Phase[];
   allPulses: Pulse[];
-}
+  
+  // For table view
+  tabularData?: {
+    date: string;
+    name: string;
+    progress: number;
+    consistency?: number; // Optional, might be complex to calculate per item
+    notes?: string; // Placeholder
+  }[];
+};

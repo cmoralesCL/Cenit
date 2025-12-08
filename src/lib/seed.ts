@@ -1,8 +1,39 @@
 
 'use server';
 import { createClient } from '@/lib/supabase/server';
-import type { HabitTask, ProgressLog } from '@/lib/types';
+import type { ProgressLog } from '@/lib/types';
 import { eachDayOfInterval, format, subDays, startOfDay, getDay, differenceInMonths, endOfWeek, isSameWeek, startOfWeek, endOfMonth, isSameMonth, startOfMonth, addDays } from 'date-fns';
+
+/**
+ * Tipo local para el seeder (compatible con los campos usados aquí).
+ * Nota: El modelo runtime puede diferir del tipo Pulse del app.
+ */
+interface HabitTask {
+  id: string;
+  user_id: string;
+  title: string;
+  type: 'habit' | 'task';
+  frequency: string | null;
+  frequency_days?: string[] | null;
+  frequency_interval?: number | null;
+  start_date?: string;
+  due_date?: string | null;
+  archived: boolean;
+  archived_at?: string | null;
+  created_at?: string | null;
+
+  // Alineado con el modelo usado en la app para ponderación y criticidad
+  weight: number;
+  is_critical: boolean;
+
+  // Medición/progreso
+  measurement_type?: 'binary' | 'quantitative' | null;
+  measurement_goal?: { target_count?: number; unit?: string } | null;
+  completion_date?: string | null;
+
+  // Campos adicionales si fueran necesarios:
+  area_prk_id?: string;
+}
 
 // Updated date range to include future data for testing.
 const SIMULATION_START_DATE = new Date(2023, 0, 1); // January 1, 2023
@@ -54,7 +85,7 @@ function getRandomDaysOfWeek(days: Date[], count: number): Date[] {
 }
 
 export async function seedDatabase(userId: string) {
-    const supabase = createClient();
+    const supabase = await createClient();
     console.log(`Starting realistic database seed for user: ${userId}`);
 
     // Clean up all data for the user

@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation';
 export const dynamic = 'force-dynamic';
 
 async function getCurrentUserId() {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {

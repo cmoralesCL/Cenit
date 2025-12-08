@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useTransition, useEffect, useMemo } from 'react';
@@ -104,6 +103,7 @@ export function DayView({
                 await addPulse(values);
                 toast({ title: '¡Pulso Agregado!', description: `Se ha agregado "${values.title}".` });
             }
+            router.refresh();
         } catch (error) {
             console.error("Error al guardar el Pulso:", error);
             toast({ variant: 'destructive', title: 'Error', description: 'No se pudo guardar el Pulso. Revisa los campos e inténtalo de nuevo.' });
@@ -125,6 +125,7 @@ export function DayView({
         } else {
           await removePulseCompletion(id, pulse.type, completionDate);
         }
+        router.refresh();
       } catch (error) {
         toast({ variant: 'destructive', title: 'Error', description: 'No se pudo actualizar la acción.' });
       }
@@ -151,6 +152,7 @@ export function DayView({
                 await removePulseCompletion(id, pulse.type, completionDate);
             }
             toast({ title: "Registro deshecho" });
+            router.refresh();
         } catch (error) {
             toast({ variant: 'destructive', title: 'Error', description: 'No se pudo deshacer la acción.' });
         }
@@ -163,6 +165,7 @@ export function DayView({
         try {
           await archivePulse(id, selectedDate.toISOString());
           toast({ title: 'Pulso Archivado' });
+          router.refresh();
         } catch (error) {
           toast({ variant: 'destructive', title: 'Error', description: 'No se pudo archivar el Pulso.' });
         }
@@ -198,6 +201,7 @@ export function DayView({
       startTransition(async () => {
           try {
               await updatePulseOrder(orderedIds);
+              router.refresh(); // Refresh data after saving new order
           } catch(error) {
               console.error("Failed to save new order", error);
               toast({ variant: 'destructive', title: 'Error', description: 'No se pudo guardar el nuevo orden.' });
@@ -326,9 +330,6 @@ export function DayView({
         
 
       </div>
-
-      {/* Hidden button to be triggered by the global FAB */}
-      <button id="day-view-fab-trigger" onClick={() => handleOpenAddPulseDialog()} className="hidden" aria-hidden="true"></button>
 
       <AddPulseDialog 
         isOpen={isPulseDialogOpen} 

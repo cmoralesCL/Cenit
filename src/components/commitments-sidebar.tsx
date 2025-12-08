@@ -109,13 +109,7 @@ export function CommitmentsSidebar({ commitments, selectedDate, isOpen, setIsOpe
     )
   }
 
-  if (!isOpen) {
-    return (
-        <Button variant="ghost" size="icon" onClick={() => setIsOpen(true)}>
-            <PanelRightOpen className="h-6 w-6" />
-        </Button>
-    )
-  }
+  
 
   return (
       <Card className="h-full w-full flex flex-col transition-all duration-300 ease-in-out shadow-none border-0">
@@ -127,9 +121,7 @@ export function CommitmentsSidebar({ commitments, selectedDate, isOpen, setIsOpe
               </CardTitle>
               <CardDescription className="text-xs">Metas sin día fijo.</CardDescription>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)} className="flex-shrink-0 h-8 w-8">
-                <PanelRightClose className="h-4 w-4" />
-            </Button>
+            
         </CardHeader>
         <CardContent className="flex-grow p-3 overflow-hidden">
         <Tabs 

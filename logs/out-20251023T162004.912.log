@@ -1,0 +1,23 @@
+
+> nextn@0.1.0 dev
+> next dev --turbopack -p 9002
+
+   ▲ Next.js 15.3.3 (Turbopack)
+   - Local:        http://localhost:9002
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Compiled middleware in 460ms
+ ✓ Ready in 2.2s
+ ○ Compiling /day ...
+ ✓ Compiled /day in 5.8s
+ GET /day 307 in 32687ms
+ ○ Compiling /login ...
+ ✓ Compiled /login in 1499ms
+ GET /login 200 in 1705ms
+ ○ Compiling /_not-found/page ...
+ GET /logo.png 404 in 889ms
+ ✓ Compiled /_not-found/page in 971ms
+ GET /favicon.ico?favicon.56766c03.ico 200 in 937ms
+Shutting down all Genkit servers...
+�Desea terminar el trabajo por lotes (S/N)? [?25h

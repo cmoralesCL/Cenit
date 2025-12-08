@@ -160,7 +160,7 @@ export function HabitTaskListItem({
                 )}
                 <span className="font-bold text-lg w-12 text-center">{Math.floor(currentTotal)}/{target}</span>
                 {onToggle && (
-                   <Button variant="outline" size="icon" className="h-8 w-8" onClick={handleAddInstance} disabled={isCompleted}>
+                   <Button variant="outline" size="icon" className="h-8 w-8" onClick={handleAddInstance} disabled={currentTotal >= target}>
                     <Plus className="h-4 w-4" />
                   </Button>
                 )}

@@ -1,0 +1,31 @@
+
+> nextn@0.1.0 dev
+> next dev --turbopack -p 9002
+
+   ▲ Next.js 15.3.3 (Turbopack)
+   - Local:        http://localhost:9002
+   - Network:      http://192.168.1.113:9002
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Compiled middleware in 263ms
+ ✓ Ready in 1719ms
+ ○ Compiling /day ...
+ ✓ Compiled /day in 5.8s
+ GET /day 200 in 8093ms
+ ✓ Compiled /favicon.ico in 495ms
+ GET /favicon.ico?favicon.56766c03.ico 200 in 873ms
+ ○ Compiling / ...
+ ✓ Compiled / in 604ms
+ GET / 307 in 706ms
+ ○ Compiling /login ...
+ ✓ Compiled /login in 1487ms
+ GET /login 200 in 1685ms
+ ○ Compiling /_not-found/page ...
+ ✓ Compiled /_not-found/page in 536ms
+ GET /logo.png 404 in 600ms
+ GET /day 200 in 1843ms
+ POST /login 303 in 4472ms
+ ○ Compiling /panel ...
+ ✓ Compiled /panel in 1857ms
+ GET /panel 200 in 3161ms

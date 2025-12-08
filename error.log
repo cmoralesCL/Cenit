@@ -482,3 +482,1107 @@ CONTEXT DATA:
 }
 --------------------------------------------------
 
+[2025-09-07T17:29:14.312Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: duplicate key value violates unique constraint "progress_logs_habit_task_id_completion_date_key"
+Code: 23505
+Details: Key (habit_task_id, completion_date)=(844bc086-53b7-4f8a-9da5-5871653c9248, 2025-09-07) already exists.
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "844bc086-53b7-4f8a-9da5-5871653c9248",
+  "completionDate": "2025-09-07",
+  "progressValue": 1
+}
+--------------------------------------------------
+
+[2025-09-07T17:41:43.860Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: duplicate key value violates unique constraint "progress_logs_habit_task_id_completion_date_key"
+Code: 23505
+Details: Key (habit_task_id, completion_date)=(844bc086-53b7-4f8a-9da5-5871653c9248, 2025-09-07) already exists.
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "844bc086-53b7-4f8a-9da5-5871653c9248",
+  "completionDate": "2025-09-07",
+  "progressValue": -1
+}
+--------------------------------------------------
+
+[2025-09-07T17:41:54.699Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: duplicate key value violates unique constraint "progress_logs_habit_task_id_completion_date_key"
+Code: 23505
+Details: Key (habit_task_id, completion_date)=(844bc086-53b7-4f8a-9da5-5871653c9248, 2025-09-06) already exists.
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "844bc086-53b7-4f8a-9da5-5871653c9248",
+  "completionDate": "2025-09-06",
+  "progressValue": -1
+}
+--------------------------------------------------
+
+[2025-09-07T17:42:06.185Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: duplicate key value violates unique constraint "progress_logs_habit_task_id_completion_date_key"
+Code: 23505
+Details: Key (habit_task_id, completion_date)=(844bc086-53b7-4f8a-9da5-5871653c9248, 2025-09-05) already exists.
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "844bc086-53b7-4f8a-9da5-5871653c9248",
+  "completionDate": "2025-09-05",
+  "progressValue": -1
+}
+--------------------------------------------------
+
+[2025-09-07T17:42:57.586Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: duplicate key value violates unique constraint "progress_logs_habit_task_id_completion_date_key"
+Code: 23505
+Details: Key (habit_task_id, completion_date)=(844bc086-53b7-4f8a-9da5-5871653c9248, 2025-09-05) already exists.
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "844bc086-53b7-4f8a-9da5-5871653c9248",
+  "completionDate": "2025-09-05",
+  "progressValue": -1
+}
+--------------------------------------------------
+
+[2025-09-07T17:43:05.594Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: duplicate key value violates unique constraint "progress_logs_habit_task_id_completion_date_key"
+Code: 23505
+Details: Key (habit_task_id, completion_date)=(844bc086-53b7-4f8a-9da5-5871653c9248, 2025-09-05) already exists.
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "844bc086-53b7-4f8a-9da5-5871653c9248",
+  "completionDate": "2025-09-05",
+  "progressValue": -1
+}
+--------------------------------------------------
+
+[2025-09-07T17:43:31.989Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: duplicate key value violates unique constraint "progress_logs_habit_task_id_completion_date_key"
+Code: 23505
+Details: Key (habit_task_id, completion_date)=(844bc086-53b7-4f8a-9da5-5871653c9248, 2025-09-05) already exists.
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "844bc086-53b7-4f8a-9da5-5871653c9248",
+  "completionDate": "2025-09-05",
+  "progressValue": -1
+}
+--------------------------------------------------
+
+[2025-09-28T01:20:43.539Z] - DETAILED ERROR LOG
+Error occurred at: addOrbit
+Error Type: Database/API Error
+Message: insert or update on table "life_prks" violates foreign key constraint "life_prks_group_id_fkey"
+Code: 23503
+Details: Key (group_id)=(dd9c0822-b66d-4ece-a751-344a96b9cd54) is not present in table "groups".
+Hint: null
+
+CONTEXT DATA:
+{
+  "values": {
+    "title": "Salud y Bienestar",
+    "description": "",
+    "color_theme": "mint"
+  }
+}
+--------------------------------------------------
+
+[2025-09-28T01:22:02.187Z] - DETAILED ERROR LOG
+Error occurred at: addOrbit
+Error Type: Database/API Error
+Message: insert or update on table "life_prks" violates foreign key constraint "life_prks_group_id_fkey"
+Code: 23503
+Details: Key (group_id)=(dd9c0822-b66d-4ece-a751-344a96b9cd54) is not present in table "groups".
+Hint: null
+
+CONTEXT DATA:
+{
+  "values": {
+    "title": "Salud y Bienestar",
+    "description": "",
+    "color_theme": "mint"
+  }
+}
+--------------------------------------------------
+
+[2025-09-28T01:35:05.773Z] - DETAILED ERROR LOG
+Error occurred at: createGroup
+Error Type: Database/API Error
+Message: duplicate key value violates unique constraint "group_members_pkey"
+Code: 23505
+Details: Key (group_id, user_id)=(5044c567-d374-4fdb-8ee1-8937cedc1db9, a2f6e7f6-0b9b-4fb5-9e7f-b7f16f3d9f39) already exists.
+Hint: null
+
+CONTEXT DATA:
+{
+  "name": "WouPET",
+  "description": "Grupo para el seguimiento de objetivos de la empresa Wou SPA"
+}
+--------------------------------------------------
+
+[2025-10-24T00:44:34.624Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-24T00:44:40.139Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-24T00:45:24.011Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-24T00:45:44.243Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-24T00:45:55.300Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-24T01:59:51.980Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T00:57:10.480Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T01:18:23.839Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T01:27:44.511Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T01:28:38.037Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T01:28:38.758Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T01:28:39.416Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T01:28:40.024Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T01:28:40.642Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T01:28:41.244Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T01:28:42.115Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T01:28:42.853Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T01:29:12.013Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T01:33:17.238Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T01:33:17.682Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+--------------------------------------------------
+
+[2025-10-25T01:47:50.986Z] - DETAILED ERROR LOG
+Error occurred at: getRegisteredUsers
+Error Type: Database/API Error
+Message: Invalid API key
+Code: undefined
+Stack Trace:
+AuthApiError: Invalid API key
+    at handleError (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:757:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:807:9)
+    at async _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:787:18)
+    at async GoTrueAdminApi.listUsers (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:1069:30)
+    at async getRegisteredUsers (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\[root-of-the-server]__02206908._.js:2385:40)
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:417:2449
+    at async handleAction (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:416:21371)
+    at async renderToHTMLOrFlightImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:422:27153)
+    at async doRender (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:1655:34)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:1920:28)
+    at async DevServer.renderPageComponent (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:2408:24)
+    at async DevServer.renderToResponseImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:2445:32)
+    at async DevServer.pipeImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:1008:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\next-server.js:305:17)
+    at async DevServer.handleRequestImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:900:17)
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\dev\next-dev-server.js:371:20
+    at async Span.traceAsyncFn (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\dev\next-dev-server.js:368:24)
+    at async invokeRender (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\router-server.js:237:21)
+    at async handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\router-server.js:428:24)
+    at async requestHandlerImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\router-server.js:452:13)
+    at async Server.requestListener (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\start-server.js:158:13)
+--------------------------------------------------
+
+[2025-10-25T01:48:21.653Z] - DETAILED ERROR LOG
+Error occurred at: getRegisteredUsers
+Error Type: Database/API Error
+Message: Invalid API key
+Code: undefined
+Stack Trace:
+AuthApiError: Invalid API key
+    at handleError (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:757:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:807:9)
+    at async _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:787:18)
+    at async GoTrueAdminApi.listUsers (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:1069:30)
+    at async getRegisteredUsers (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\[root-of-the-server]__02206908._.js:2385:40)
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:417:2449
+    at async handleAction (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:416:21371)
+    at async renderToHTMLOrFlightImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:422:27153)
+    at async doRender (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:1655:34)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:1920:28)
+    at async DevServer.renderPageComponent (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:2408:24)
+    at async DevServer.renderToResponseImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:2445:32)
+    at async DevServer.pipeImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:1008:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\next-server.js:305:17)
+    at async DevServer.handleRequestImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:900:17)
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\dev\next-dev-server.js:371:20
+    at async Span.traceAsyncFn (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\dev\next-dev-server.js:368:24)
+    at async invokeRender (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\router-server.js:237:21)
+    at async handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\router-server.js:428:24)
+    at async requestHandlerImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\router-server.js:452:13)
+    at async Server.requestListener (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\start-server.js:158:13)
+--------------------------------------------------
+
+[2025-10-25T01:58:38.444Z] - DETAILED ERROR LOG
+Error occurred at: getRegisteredUsers
+Error Type: Database/API Error
+Message: Invalid API key
+Code: undefined
+Stack Trace:
+AuthApiError: Invalid API key
+    at handleError (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:757:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:807:9)
+    at async _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:787:18)
+    at async GoTrueAdminApi.listUsers (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:1069:30)
+    at async getRegisteredUsers (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\[root-of-the-server]__02206908._.js:2385:40)
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:417:2449
+    at async handleAction (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:416:21371)
+    at async renderToHTMLOrFlightImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:422:27153)
+    at async doRender (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:1655:34)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:1920:28)
+    at async DevServer.renderPageComponent (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:2408:24)
+    at async DevServer.renderToResponseImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:2445:32)
+    at async DevServer.pipeImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:1008:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\next-server.js:305:17)
+    at async DevServer.handleRequestImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:900:17)
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\dev\next-dev-server.js:371:20
+    at async Span.traceAsyncFn (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\dev\next-dev-server.js:368:24)
+    at async invokeRender (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\router-server.js:237:21)
+    at async handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\router-server.js:428:24)
+    at async requestHandlerImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\router-server.js:452:13)
+    at async Server.requestListener (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\start-server.js:158:13)
+--------------------------------------------------
+
+[2025-10-25T01:58:55.701Z] - DETAILED ERROR LOG
+Error occurred at: getRegisteredUsers
+Error Type: Database/API Error
+Message: Invalid API key
+Code: undefined
+Stack Trace:
+AuthApiError: Invalid API key
+    at handleError (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:757:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async _handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:807:9)
+    at async _request (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:787:18)
+    at async GoTrueAdminApi.listUsers (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\node_modules_@supabase_auth-js_dist_module_2a35e6ef._.js:1069:30)
+    at async getRegisteredUsers (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\.next\server\chunks\ssr\[root-of-the-server]__02206908._.js:2385:40)
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:417:2449
+    at async handleAction (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:416:21371)
+    at async renderToHTMLOrFlightImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:422:27153)
+    at async doRender (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:1655:34)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:1920:28)
+    at async DevServer.renderPageComponent (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:2408:24)
+    at async DevServer.renderToResponseImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:2445:32)
+    at async DevServer.pipeImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:1008:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\next-server.js:305:17)
+    at async DevServer.handleRequestImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\base-server.js:900:17)
+    at async C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\dev\next-dev-server.js:371:20
+    at async Span.traceAsyncFn (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\dev\next-dev-server.js:368:24)
+    at async invokeRender (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\router-server.js:237:21)
+    at async handleRequest (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\router-server.js:428:24)
+    at async requestHandlerImpl (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\router-server.js:452:13)
+    at async Server.requestListener (C:\Users\moral\OneDrive\Documentos\Github\PersonalResult\PRK\node_modules\next\dist\server\lib\start-server.js:158:13)
+--------------------------------------------------
+
+[2025-10-25T02:03:14.856Z] - DETAILED ERROR LOG
+Error occurred at: inviteUserToGroup
+Error Type: Database/API Error
+Message: duplicate key value violates unique constraint "group_members_pkey"
+Code: 23505
+Details: Key (user_id, group_id)=(1a5b7677-2661-4802-b82b-b90e3b77fe8a, ed1f46df-980a-4d21-8d50-0d9599b78100) already exists.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100",
+  "userId": "1a5b7677-2661-4802-b82b-b90e3b77fe8a"
+}
+--------------------------------------------------
+
+[2025-10-25T02:12:33.876Z] - DETAILED ERROR LOG
+Error occurred at: getGroupMembers
+Error Type: Database/API Error
+Message: Could not find a relationship between 'group_members' and 'users' in the schema cache
+Code: PGRST200
+Details: Searched for a foreign key relationship between 'group_members' and 'users' in the schema 'public', but no matches were found.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100"
+}
+--------------------------------------------------
+
+[2025-10-25T02:12:34.088Z] - DETAILED ERROR LOG
+Error occurred at: getGroupMembers
+Error Type: Database/API Error
+Message: Could not find a relationship between 'group_members' and 'users' in the schema cache
+Code: PGRST200
+Details: Searched for a foreign key relationship between 'group_members' and 'users' in the schema 'public', but no matches were found.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100"
+}
+--------------------------------------------------
+
+[2025-10-25T02:13:04.246Z] - DETAILED ERROR LOG
+Error occurred at: getGroupMembers
+Error Type: Database/API Error
+Message: Could not find a relationship between 'group_members' and 'users' in the schema cache
+Code: PGRST200
+Details: Searched for a foreign key relationship between 'group_members' and 'users' in the schema 'public', but no matches were found.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100"
+}
+--------------------------------------------------
+
+[2025-10-25T02:16:01.360Z] - DETAILED ERROR LOG
+Error occurred at: getGroupMembers RPC call
+Error Type: Database/API Error
+Message: Could not find the function public.get_group_members_with_details(p_group_id) in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_group_members_with_details with parameter p_group_id or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100"
+}
+--------------------------------------------------
+
+[2025-10-25T02:16:01.963Z] - DETAILED ERROR LOG
+Error occurred at: getGroupMembers RPC call
+Error Type: Database/API Error
+Message: Could not find the function public.get_group_members_with_details(p_group_id) in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_group_members_with_details with parameter p_group_id or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100"
+}
+--------------------------------------------------
+
+[2025-10-25T02:16:02.568Z] - DETAILED ERROR LOG
+Error occurred at: getGroupMembers RPC call
+Error Type: Database/API Error
+Message: Could not find the function public.get_group_members_with_details(p_group_id) in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_group_members_with_details with parameter p_group_id or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100"
+}
+--------------------------------------------------
+
+[2025-10-25T02:16:03.089Z] - DETAILED ERROR LOG
+Error occurred at: getGroupMembers RPC call
+Error Type: Database/API Error
+Message: Could not find the function public.get_group_members_with_details(p_group_id) in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_group_members_with_details with parameter p_group_id or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100"
+}
+--------------------------------------------------
+
+[2025-10-25T02:16:03.711Z] - DETAILED ERROR LOG
+Error occurred at: getGroupMembers RPC call
+Error Type: Database/API Error
+Message: Could not find the function public.get_group_members_with_details(p_group_id) in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_group_members_with_details with parameter p_group_id or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100"
+}
+--------------------------------------------------
+
+[2025-10-25T02:16:04.304Z] - DETAILED ERROR LOG
+Error occurred at: getGroupMembers RPC call
+Error Type: Database/API Error
+Message: Could not find the function public.get_group_members_with_details(p_group_id) in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_group_members_with_details with parameter p_group_id or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100"
+}
+--------------------------------------------------
+
+[2025-10-25T02:16:04.937Z] - DETAILED ERROR LOG
+Error occurred at: getGroupMembers RPC call
+Error Type: Database/API Error
+Message: Could not find the function public.get_group_members_with_details(p_group_id) in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_group_members_with_details with parameter p_group_id or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100"
+}
+--------------------------------------------------
+
+[2025-10-25T02:16:05.519Z] - DETAILED ERROR LOG
+Error occurred at: getGroupMembers RPC call
+Error Type: Database/API Error
+Message: Could not find the function public.get_group_members_with_details(p_group_id) in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_group_members_with_details with parameter p_group_id or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100"
+}
+--------------------------------------------------
+
+[2025-10-25T02:17:09.198Z] - DETAILED ERROR LOG
+Error occurred at: getGroupMembers RPC call
+Error Type: Database/API Error
+Message: Could not find the function public.get_group_members_with_details(p_group_id) in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_group_members_with_details with parameter p_group_id or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100"
+}
+--------------------------------------------------
+
+[2025-10-25T02:18:30.260Z] - DETAILED ERROR LOG
+Error occurred at: getGroupMembers RPC call
+Error Type: Database/API Error
+Message: structure of query does not match function result type
+Code: 42804
+Details: Returned type character varying(255) does not match expected type text in column 2.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100"
+}
+--------------------------------------------------
+
+[2025-10-25T02:20:11.566Z] - DETAILED ERROR LOG
+Error occurred at: getGroupMembers RPC call
+Error Type: Database/API Error
+Message: structure of query does not match function result type
+Code: 42804
+Details: Returned type character varying(255) does not match expected type text in column 2.
+Hint: null
+
+CONTEXT DATA:
+{
+  "groupId": "ed1f46df-980a-4d21-8d50-0d9599b78100"
+}
+--------------------------------------------------
+
+[2025-10-25T16:27:37.403Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: Perhaps you meant to call the function public.get_group_members_with_details
+--------------------------------------------------
+
+[2025-10-26T03:12:59.504Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: Perhaps you meant to call the function public.get_group_members_with_details
+--------------------------------------------------
+
+[2025-10-26T03:14:05.743Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: there is no unique or exclusion constraint matching the ON CONFLICT specification
+Code: 42P10
+Details: null
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "1a9ff872-6c03-412c-b5e1-dbd054585b7c",
+  "completionDate": "2025-10-26"
+}
+--------------------------------------------------
+
+[2025-10-26T03:14:22.865Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: there is no unique or exclusion constraint matching the ON CONFLICT specification
+Code: 42P10
+Details: null
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "1a9ff872-6c03-412c-b5e1-dbd054585b7c",
+  "completionDate": "2025-10-26"
+}
+--------------------------------------------------
+
+[2025-10-26T03:14:35.113Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: there is no unique or exclusion constraint matching the ON CONFLICT specification
+Code: 42P10
+Details: null
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "1a9ff872-6c03-412c-b5e1-dbd054585b7c",
+  "completionDate": "2025-10-26"
+}
+--------------------------------------------------
+
+[2025-10-26T03:17:50.889Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: there is no unique or exclusion constraint matching the ON CONFLICT specification
+Code: 42P10
+Details: null
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "859542bd-3b3f-4f6b-a700-370d029fe88c",
+  "completionDate": "2025-10-26"
+}
+--------------------------------------------------
+
+[2025-10-26T03:18:13.537Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: there is no unique or exclusion constraint matching the ON CONFLICT specification
+Code: 42P10
+Details: null
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "859542bd-3b3f-4f6b-a700-370d029fe88c",
+  "completionDate": "2025-10-26"
+}
+--------------------------------------------------
+
+[2025-10-26T03:18:15.387Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: Perhaps you meant to call the function public.get_group_members_with_details
+--------------------------------------------------
+
+[2025-10-26T03:18:16.048Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: Perhaps you meant to call the function public.get_group_members_with_details
+--------------------------------------------------
+
+[2025-10-26T03:18:29.768Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: there is no unique or exclusion constraint matching the ON CONFLICT specification
+Code: 42P10
+Details: null
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "859542bd-3b3f-4f6b-a700-370d029fe88c",
+  "completionDate": "2025-10-26"
+}
+--------------------------------------------------
+
+[2025-10-26T03:18:35.040Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: there is no unique or exclusion constraint matching the ON CONFLICT specification
+Code: 42P10
+Details: null
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "4f64af55-98e9-4b5e-b9dd-8d2e53582108",
+  "completionDate": "2025-10-26"
+}
+--------------------------------------------------
+
+[2025-10-26T03:18:38.725Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: there is no unique or exclusion constraint matching the ON CONFLICT specification
+Code: 42P10
+Details: null
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "1a9ff872-6c03-412c-b5e1-dbd054585b7c",
+  "completionDate": "2025-10-26"
+}
+--------------------------------------------------
+
+[2025-10-26T03:21:09.192Z] - DETAILED ERROR LOG
+Error occurred at: logPulseCompletion
+Error Type: Database/API Error
+Message: there is no unique or exclusion constraint matching the ON CONFLICT specification
+Code: 42P10
+Details: null
+Hint: null
+
+CONTEXT DATA:
+{
+  "pulseId": "859542bd-3b3f-4f6b-a700-370d029fe88c",
+  "completionDate": "2025-10-26"
+}
+--------------------------------------------------
+
+[2025-10-26T03:23:39.619Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: Perhaps you meant to call the function public.get_group_members_with_details
+--------------------------------------------------
+
+[2025-10-26T03:45:38.323Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: Perhaps you meant to call the function public.get_group_members_with_details
+--------------------------------------------------
+
+[2025-10-26T03:46:16.814Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: Perhaps you meant to call the function public.get_group_members_with_details
+--------------------------------------------------
+
+[2025-10-26T03:46:17.408Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: Perhaps you meant to call the function public.get_group_members_with_details
+--------------------------------------------------
+
+[2025-10-26T03:46:22.361Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: Perhaps you meant to call the function public.get_group_members_with_details
+--------------------------------------------------
+
+[2025-10-26T03:46:42.790Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: Perhaps you meant to call the function public.get_group_members_with_details
+--------------------------------------------------
+
+[2025-10-26T03:47:16.257Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: Perhaps you meant to call the function public.get_group_members_with_details
+--------------------------------------------------
+
+[2025-10-26T03:47:20.072Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: Could not find the function public.get_user_simple_tasks without parameters in the schema cache
+Code: PGRST202
+Details: Searched for the function public.get_user_simple_tasks without parameters or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.
+Hint: Perhaps you meant to call the function public.get_group_members_with_details
+--------------------------------------------------
+
+[2025-10-26T03:53:17.015Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: structure of query does not match function result type
+Code: 42804
+Details: Returned type character varying(255) does not match expected type text in column 8.
+Hint: null
+--------------------------------------------------
+
+[2025-10-26T03:54:07.105Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: structure of query does not match function result type
+Code: 42804
+Details: Returned type character varying(255) does not match expected type text in column 8.
+Hint: null
+--------------------------------------------------
+
+[2025-10-26T03:56:40.704Z] - DETAILED ERROR LOG
+Error occurred at: getSimpleTasks
+Error Type: Database/API Error
+Message: structure of query does not match function result type
+Code: 42804
+Details: Returned type character varying(255) does not match expected type text in column 8.
+Hint: null
+--------------------------------------------------
+
+[2025-10-27T01:55:15.174Z] - DETAILED ERROR LOG
+Error occurred at: getGroupsForUser
+Error Type: Database/API Error
+Message: <!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en-US"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en-US"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en-US"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en-US"> <!--<![endif]-->
+<head>
+
+<title> | 500: Internal server error</title>
+<meta charset="UTF-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" id="cf_styles-css" href="/cdn-cgi/styles/main.css" />
+</head>
+<body>
+<div id="cf-wrapper">
+    <div id="cf-error-details" class="p-0">
+        <header class="mx-auto pt-10 lg:pt-6 lg:px-8 w-240 lg:w-full mb-8">
+            <h1 class="inline-block sm:block sm:mb-2 font-light text-60 lg:text-4xl text-black-dark leading-tight mr-2">
+                <span class="inline-block">Internal server error</span>
+                <span class="code-label">Error code 500</span>
+            </h1>
+            <div>
+                Visit <a href="https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_500&utm_campaign=lhvokvzuvouowitouxrk.supabase.co" target="_blank" rel="noopener noreferrer">cloudflare.com</a> for more information.
+            </div>
+            <div class="mt-3">2025-10-27 01:55:15 UTC</div>
+        </header>
+        <div class="my-8 bg-gradient-gray">
+            <div class="w-240 lg:w-full mx-auto">
+                <div class="clearfix md:px-8">
+                    <div id="cf-browser-status" class=" relative w-1/3 md:w-full py-15 md:p-0 md:py-8 md:text-left md:border-solid md:border-0 md:border-b md:border-gray-400 overflow-hidden float-left md:float-none text-center">
+  <div class="relative mb-10 md:m-0">
+    
+    <span class="cf-icon-browser block md:hidden h-20 bg-center bg-no-repeat"></span>
+    <span class="cf-icon-ok w-12 h-12 absolute left-1/2 md:left-auto md:right-0 md:top-0 -ml-6 -bottom-4"></span>
+    
+  </div>
+  <span class="md:block w-full truncate">You</span>
+  <h3 class="md:inline-block mt-3 md:mt-0 text-2xl text-gray-600 font-light leading-1.3">
+  
+    Browser
+  
+  </h3>
+  
+  <span class="leading-1.3 text-2xl text-green-success">Working</span>
+  
+</div>
+                    <div id="cf-cloudflare-status" class="cf-error-source relative w-1/3 md:w-full py-15 md:p-0 md:py-8 md:text-left md:border-solid md:border-0 md:border-b md:border-gray-400 overflow-hidden float-left md:float-none text-center">
+  <div class="relative mb-10 md:m-0">
+    <a href="https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_500&#38;utm_campaign=lhvokvzuvouowitouxrk.supabase.co" target="_blank" rel="noopener noreferrer">
+    <span class="cf-icon-cloud block md:hidden h-20 bg-center bg-no-repeat"></span>
+    <span class="cf-icon-error w-12 h-12 absolute left-1/2 md:left-auto md:right-0 md:top-0 -ml-6 -bottom-4"></span>
+    </a>
+  </div>
+  <span class="md:block w-full truncate">Santiago</span>
+  <h3 class="md:inline-block mt-3 md:mt-0 text-2xl text-gray-600 font-light leading-1.3">
+  <a href="https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_500&utm_campaign=lhvokvzuvouowitouxrk.supabase.co" target="_blank" rel="noopener noreferrer">
+    Cloudflare
+  </a>
+  </h3>
+  
+  <span class="leading-1.3 text-2xl text-red-error">Error</span>
+  
+</div>
+                    <div id="cf-host-status" class=" relative w-1/3 md:w-full py-15 md:p-0 md:py-8 md:text-left md:border-solid md:border-0 md:border-b md:border-gray-400 overflow-hidden float-left md:float-none text-center">
+  <div class="relative mb-10 md:m-0">
+    
+    <span class="cf-icon-server block md:hidden h-20 bg-center bg-no-repeat"></span>
+    <span class="cf-icon-ok w-12 h-12 absolute left-1/2 md:left-auto md:right-0 md:top-0 -ml-6 -bottom-4"></span>
+    
+  </div>
+  <span class="md:block w-full truncate">lhvokvzuvouowitouxrk.supabase.co</span>
+  <h3 class="md:inline-block mt-3 md:mt-0 text-2xl text-gray-600 font-light leading-1.3">
+  
+    Host
+  
+  </h3>
+  
+  <span class="leading-1.3 text-2xl text-green-success">Working</span>
+  
+</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-240 lg:w-full mx-auto mb-8 lg:px-8">
+            <div class="clearfix">
+                <div class="w-1/2 md:w-full float-left pr-6 md:pb-10 md:pr-0 leading-relaxed">
+                    <h2 class="text-3xl font-normal leading-1.3 mb-4">What happened?</h2>
+                    <p>There is an internal server error on Cloudflare's network.</p>
+                </div>
+                <div class="w-1/2 md:w-full float-left leading-relaxed">
+                    <h2 class="text-3xl font-normal leading-1.3 mb-4">What can I do?</h2>
+                    <p class="mb-6">Please try again in a few minutes.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300">
+    <p class="text-13">
+      <span class="cf-footer-item sm:block sm:mb-1">Cloudflare Ray ID: <strong class="font-semibold">994e91f2a97ab4cb</strong></span>
+      <span class="cf-footer-separator sm:hidden">&bull;</span>
+      <span id="cf-footer-item-ip" class="cf-footer-item hidden sm:block sm:mb-1">
+        Your IP:
+        <button type="button" id="cf-footer-ip-reveal" class="cf-footer-ip-reveal-btn">Click to reveal</button>
+        <span class="hidden" id="cf-footer-ip">190.20.139.108</span>
+        <span class="cf-footer-separator sm:hidden">&bull;</span>
+      </span>
+      <span class="cf-footer-item sm:block sm:mb-1"><span>Performance &amp; security by</span> <a rel="noopener noreferrer" href="https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_500&#38;utm_campaign=lhvokvzuvouowitouxrk.supabase.co" id="brand_link" target="_blank">Cloudflare</a></span>
+      
+    </p>
+    <script>(function(){function d(){var b=a.getElementById("cf-footer-item-ip"),c=a.getElementById("cf-footer-ip-reveal");b&&"classList"in b&&(b.classList.remove("hidden"),c.addEventListener("click",function(){c.classList.add("hidden");a.getElementById("cf-footer-ip").classList.remove("hidden")}))}var a=document;document.addEventListener&&a.addEventListener("DOMContentLoaded",d)})();</script>
+  </div><!-- /.error-footer -->
+
+    </div>
+</div>
+</body>
+</html>
+--------------------------------------------------
+
+[2025-11-10T04:44:46.296Z] - DETAILED ERROR LOG
+Error occurred at: addSimpleTask
+Error Type: Database/API Error
+Message: Could not find the 'description' column of 'simple_tasks' in the schema cache
+Code: PGRST204
+Details: null
+Hint: null
+
+CONTEXT DATA:
+{
+  "title": "Leer normativas SAG y SEREMI"
+}
+--------------------------------------------------
+
+[2025-11-10T04:45:05.609Z] - DETAILED ERROR LOG
+Error occurred at: addSimpleTask
+Error Type: Database/API Error
+Message: Could not find the 'description' column of 'simple_tasks' in the schema cache
+Code: PGRST204
+Details: null
+Hint: null
+
+CONTEXT DATA:
+{
+  "title": "Leer normativas SAG Y"
+}
+--------------------------------------------------
+
