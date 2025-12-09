@@ -1,9 +1,10 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { getSafeCookieStore } from '@/lib/cookies'
 
 export async function createClient() {
   // Next.js 15: cookies() es asíncrono y debe aguardarse antes de usar sus valores
-  const cookieStore = await cookies();
+  // Usamos helper para asegurar consistencia y logging
+  const cookieStore = await getSafeCookieStore();
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

@@ -3,17 +3,18 @@ import * as React from 'react';
 import { Panel } from '@/components/panel';
 import { getPanelData } from '@/app/server/queries';
 import { createClient } from '@/lib/supabase/server';
-import { cookies } from 'next/headers';
+import { getSafeCookieStore } from '@/lib/cookies';
 
 export const dynamic = 'force-dynamic';
 
 // Helper function to isolate the dynamic cookies() call
-function getGroupId() {
-  return cookies().get('groupId')?.value || null;
+async function getGroupId() {
+  const cookieStore = await getSafeCookieStore();
+  return cookieStore.get('groupId')?.value || null;
 }
 
 export default async function PanelPage() {
-  let groupId = getGroupId();
+  let groupId = await getGroupId();
 
   // Validate the groupId from the cookie
   if (groupId) {
