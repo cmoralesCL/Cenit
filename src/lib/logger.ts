@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createServerClient } from '@supabase/ssr';
 
 function formatLogMessage(error: any, contextData?: any): { message: string, details: any } {
     let message = '';
@@ -26,7 +26,24 @@ export async function logError(error: any, contextData?: any): Promise<void> {
 
     // 2. Persist to Supabase
     try {
-        const supabase = await createClient();
+        // Use a direct admin client to avoid recursive errors if the main createClient depends on broken cookies
+        // and to allow logging even if session is invalid.
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+        const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+        if (!serviceRoleKey) {
+            console.error("Logger Warning: SUPABASE_SERVICE_ROLE_KEY is not set. Skipping DB log.");
+            return;
+        }
+
+        const supabase = createServerClient(supabaseUrl, serviceRoleKey, {
+            cookies: {
+                get(name: string) { return undefined; },
+                set(name: string, value: string, options: any) { },
+                remove(name: string, options: any) { },
+            },
+        });
+
         const { message, details } = formatLogMessage(error, contextData);
 
         // Attempt to extract user_id if present in context or we could fetch it (but costly)
