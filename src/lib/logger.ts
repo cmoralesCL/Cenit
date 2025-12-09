@@ -1,78 +1,51 @@
+import { createClient } from '@/lib/supabase/server';
 
-'use server';
+function formatLogMessage(error: any, contextData?: any): { message: string, details: any } {
+    let message = '';
+    let details: any = { ...contextData };
 
-import fs from 'fs';
-import path from 'path';
-
-const logFilePath = path.join(process.cwd(), 'error.log');
-
-function formatLogMessage(error: any, contextData?: any): string {
-    const timestamp = new Date().toISOString();
-    let errorMessage = `[${timestamp}] - DETAILED ERROR LOG\n`;
-
-    if (contextData?.at) {
-        errorMessage += `Error occurred at: ${contextData.at}\n`;
-        delete contextData.at;
+    if (error instanceof Error) {
+        message = error.message;
+        details.stack = error.stack;
+        details.name = error.name;
+    } else if (typeof error === 'object' && error !== null) {
+        message = error.message || 'Unknown Error Object';
+        details.rawError = error;
+    } else {
+        message = String(error);
     }
 
-    if (typeof error === 'object' && error !== null && 'message' in error) {
-        errorMessage += `Error Type: Database/API Error\n`;
-        errorMessage += `Message: ${error.message}\n`;
-        if ('code' in error) errorMessage += `Code: ${error.code}\n`;
-        if ('details' in error) errorMessage += `Details: ${error.details}\n`;
-        if ('hint' in error) errorMessage += `Hint: ${error.hint}\n`;
-        
-        if (error instanceof Error && error.stack) {
-            errorMessage += `Stack Trace:\n${error.stack}\n`;
-        }
-    } 
-    else if (error instanceof Error) {
-        errorMessage += `Error Type: Javascript Error\n`;
-        errorMessage += `Name: ${error.name}\n`;
-        errorMessage += `Message: ${error.message}\n`;
-        if (error.stack) {
-            errorMessage += `Stack Trace:\n${error.stack}\n`;
-        }
-    } 
-    else {
-        errorMessage += `Error Type: Non-Error Object Caught\n`;
-        try {
-            const prettyPrinted = JSON.stringify(error, null, 2);
-            errorMessage += `Content: ${prettyPrinted}\n`;
-        } catch {
-            errorMessage += `Content (unserializable): ${error}\n`;
-        }
-    }
-
-    if (contextData && Object.keys(contextData).length > 0) {
-        errorMessage += `\nCONTEXT DATA:\n`;
-        try {
-            const prettyContext = JSON.stringify(contextData, null, 2);
-            errorMessage += `${prettyContext}\n`;
-        } catch {
-            errorMessage += `Context (unserializable): ${contextData}\n`;
-        }
-    }
-
-    errorMessage += '--------------------------------------------------\n\n';
-    return errorMessage;
+    return { message, details };
 }
 
 export async function logError(error: any, contextData?: any): Promise<void> {
-    // Log raw objects for interactive terminal inspection
-    console.error("--- RAW ERROR OBJECT ---", error);
-    if (contextData) {
-        console.error("--- RAW CONTEXT OBJECT ---", contextData);
-    }
+    // 1. Console Log (Always keep for immediate feedback/build logs)
+    console.error("--- SYSTEM LOG ---");
+    console.error("Error:", error);
+    if (contextData) console.error("Context:", contextData);
 
-    const message = formatLogMessage(error, contextData);
-
-    // Log the formatted, detailed string for readability and file logging
-    console.error(message);
-
+    // 2. Persist to Supabase
     try {
-        fs.appendFileSync(logFilePath, message, 'utf8');
-    } catch (writeError) {
-        console.error("Critical: Logging to file failed. The environment might not have write permissions.", writeError);
+        const supabase = await createClient();
+        const { message, details } = formatLogMessage(error, contextData);
+
+        // Attempt to extract user_id if present in context or we could fetch it (but costly)
+        // contextData often has 'userId' or we let it be null.
+        const userId = contextData?.userId || contextData?.user_id || null;
+        const path = contextData?.path || null;
+
+        await supabase.from('system_logs').insert({
+            level: 'error',
+            message: message.substring(0, 1000), // Truncate specific content if too long
+            details: details,
+            user_id: userId,
+            path: path,
+            environment: process.env.NODE_ENV || 'development'
+        });
+
+    } catch (loggingError) {
+        // Fallback: If DB logging fails, just strictly console error.
+        // This prevents infinite loops if DB connection itself is the error.
+        console.error("CRITICAL: Failed to log error to database.", loggingError);
     }
 }
