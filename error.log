@@ -1586,3 +1586,17 @@ CONTEXT DATA:
 }
 --------------------------------------------------
 
+[2025-12-09T01:32:10.092Z] - DETAILED ERROR LOG
+Error occurred at: addSimpleTask
+Error Type: Database/API Error
+Message: Could not find the 'description' column of 'simple_tasks' in the schema cache
+Code: PGRST204
+Details: null
+Hint: null
+
+CONTEXT DATA:
+{
+  "title": "prueba"
+}
+--------------------------------------------------
+
