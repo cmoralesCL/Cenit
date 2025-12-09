@@ -20,7 +20,7 @@ export function NewAnalyticsDashboard({ initialData }: NewAnalyticsDashboardProp
     <div className="space-y-6">
       <AnalyticsFilters data={analyticsData} />
       <KpiCards kpis={analyticsData.kpis} />
-      
+
       <div className="flex items-center justify-end space-x-2">
         <Button variant={viewMode === 'chart' ? 'secondary' : 'ghost'} onClick={() => setViewMode('chart')}>Gráfico</Button>
         <Button variant={viewMode === 'table' ? 'secondary' : 'ghost'} onClick={() => setViewMode('table')}>Tabla</Button>
@@ -28,7 +28,7 @@ export function NewAnalyticsDashboard({ initialData }: NewAnalyticsDashboardProp
 
       <div>
         {viewMode === 'chart' ? (
-          <AnalyticsChart chartData={analyticsData.chartData} />
+          <AnalyticsChart chartData={analyticsData.chartData} orbits={analyticsData.allOrbits} />
         ) : (
           <AnalyticsTable data={analyticsData} />
         )}
