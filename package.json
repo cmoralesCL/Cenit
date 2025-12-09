@@ -11,7 +11,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "generate-inserts": "tsx generate-seed-inserts.ts"
+    "generate-inserts": "tsx generate-seed-inserts.ts",
+    "test": "vitest run"
   },
   "dependencies": {
     "@genkit-ai/googleai": "^1.13.0",
@@ -63,14 +64,18 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@vitejs/plugin-react": "^5.1.2",
     "genkit-cli": "^1.13.0",
+    "jsdom": "^27.3.0",
     "next": "^16.0.8",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.16.2",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.0.15"
   }
 }
