@@ -3,8 +3,10 @@ import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adap
 
 export async function getSafeCookieStore(): Promise<ReadonlyRequestCookies> {
     try {
-        const cookieStore = await cookies();
-        // console.log('[Cookies Debug] cookies() awaited successfully');
+        const cookieStorePromise = cookies();
+        // console.log('[Cookies Debug] cookies() called. Is Promise?', cookieStorePromise instanceof Promise);
+        const cookieStore = await cookieStorePromise;
+        // console.log('[Cookies Debug] cookies() awaited. Type:', typeof cookieStore);
         return cookieStore;
     } catch (error) {
         console.error('Error getting cookie store:', error);

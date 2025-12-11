@@ -236,34 +236,34 @@ export async function updatePhase(id: string, values: { title: string; descripti
 }
 
 export async function addPulse(values: Partial<Omit<Pulse, 'id' | 'created_at' | 'archived_at' | 'archived'>>) {
-    const supabase = await createClient();
-    const userId = await getCurrentUserId();
-    const cookieStore = await getSafeCookieStore();
-    let groupId = cookieStore.get('groupId')?.value || null;
-
-    // Validate the groupId
-    if (groupId) {
-        const { data: groupMember, error: groupError } = await supabase
-            .from('group_members')
-            .select('group_id')
-            .eq('group_id', groupId)
-            .eq('user_id', userId)
-            .single();
-
-        if (groupError || !groupMember) {
-            console.warn(`Invalid or non-member groupId (${groupId}) found in cookie. Falling back to personal pulse.`);
-            groupId = null; // Invalidate if user is not a member or group doesn't exist
-        }
-    }
-
-    const { phase_ids, ...taskData } = values;
-    const dataToInsert: any = { ...taskData, user_id: userId, group_id: groupId };
-
-    if (dataToInsert.frequency === 'UNICA') {
-        dataToInsert.frequency = null;
-    }
-
     try {
+        const supabase = await createClient();
+        const userId = await getCurrentUserId();
+        const cookieStore = await getSafeCookieStore();
+        let groupId = cookieStore.get('groupId')?.value || null;
+
+        // Validate the groupId
+        if (groupId) {
+            const { data: groupMember, error: groupError } = await supabase
+                .from('group_members')
+                .select('group_id')
+                .eq('group_id', groupId)
+                .eq('user_id', userId)
+                .single();
+
+            if (groupError || !groupMember) {
+                console.warn(`Invalid or non-member groupId (${groupId}) found in cookie. Falling back to personal pulse.`);
+                groupId = null; // Invalidate if user is not a member or group doesn't exist
+            }
+        }
+
+        const { phase_ids, ...taskData } = values;
+        const dataToInsert: any = { ...taskData, user_id: userId, group_id: groupId };
+
+        if (dataToInsert.frequency === 'UNICA') {
+            dataToInsert.frequency = null;
+        }
+
         const { data: newTask, error } = await supabase.from('habit_tasks').insert([dataToInsert]).select().single();
         if (error) throw error;
 
@@ -277,7 +277,7 @@ export async function addPulse(values: Partial<Omit<Pulse, 'id' | 'created_at' |
         }
 
     } catch (error) {
-        await logError(error, { at: 'addPulse', values: dataToInsert, phase_ids });
+        await logError(error, { at: 'addPulse', values });
         console.error("Error adding Pulse:", error);
         throw error;
     }
