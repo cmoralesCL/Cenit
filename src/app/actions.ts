@@ -236,6 +236,7 @@ export async function updatePhase(id: string, values: { title: string; descripti
 }
 
 export async function addPulse(values: Partial<Omit<Pulse, 'id' | 'created_at' | 'archived_at' | 'archived'>>) {
+    console.log('[addPulse] Function triggered with values:', JSON.stringify(values));
     try {
         const supabase = await createClient();
         const userId = await getCurrentUserId();
